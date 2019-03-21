@@ -24,19 +24,30 @@ au = 1.49597e11
 def simulate(destination_directory, CONT_PREVIOUS,
              save_suffix="",
              init_conds_name="/init_conds.txt",
-             init_conds_directory = "/home/ug/c1672922/code"):
+             init_conds_directory="/home/ug/c1672922/code",
+             source_directory="",
+             report_pos=100):
+
     if not CONT_PREVIOUS:
-        data = of.get_init_conds(init_conds_directory + init_conds_name)
-        data = [int(i) for i in data]
-        progression = list((data[-3], data[-2], data[-1]))
-        data = data[0:-3]
-        cluster_list = of.gen_filament(*data, *progression)
+        # Getting init_conds for simulation
+        # Formatting of data
+        init_vars = of.get_init_conds(init_conds_directory + init_conds_name)
+        init_vars = [int(i) for i in init_vars]
+        progression = list((init_vars[-3], init_vars[-2], init_vars[-1]))
+        init_vars = init_vars[0:-3]
+        num_to_strip = init_vars[1]
+        # Generating initial_data
+        cluster_list = of.gen_filament(*init_vars, *progression)
+        # Saving init_conds to file
         cluster_text = "/cluster.csv"
         file_loc = destination_directory + cluster_text
         np.savetxt(file_loc, cluster_list, delimiter=",")
         time.sleep(1)
-        masses, rx, ry, rz, vx, vy, vz = of.get_data_ready(file_loc)
+        # Loading in data
+        masses, rx, ry, rz, vx, vy, vz = of.get_data_ready(file_loc,
+                                                           num_to_strip)
         N = len(masses)
+        print(N)
 
     elif CONT_PREVIOUS:
         masses = of.get_single_data(source_directory+"/masses.csv")
@@ -54,7 +65,6 @@ def simulate(destination_directory, CONT_PREVIOUS,
     # %%
     Tmax = 3.3e9  # Total integration time
     dt = 10  # Time step
-    report_pos = 100
     time_count = []
     t = 0
     count = 0
@@ -68,7 +78,7 @@ def simulate(destination_directory, CONT_PREVIOUS,
     time_to_run = []
     sim_time = []
     start = time.time()
-    while count <= 100000:  # Iterating through by dt to Tmax
+    while count <= 1000000:  # Iterating through by dt to Tmax
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt

@@ -6,6 +6,7 @@ Created on Mon Nov 26 17:31:44 2018
 @author: c1672922
 """
 import numpy as np
+import random
 
 G = 6.674e-11
 au = 1.49597e11
@@ -15,20 +16,21 @@ pc = 3.0857e16
 # =============================================================================
 
 
-def get_data_ready(filename):
+def get_data_ready(filename, num_to_strip=0):
     with open(filename) as f:
         ncols = len(f.readline().split(","))
 
     masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",",
                                                    usecols=range(1, ncols))
-    masses, rx, ry, rz, vx, vy, vz = clean_data(masses, rx, ry, rz, vx, vy, vz)
+    #masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses, rx, ry, rz, vx, vy, vz)
     return masses, rx, ry, rz, vx, vy, vz
 
 
-def clean_data(masses, rx, ry, rz, vx, vy, vz):
-    masses = masses[4:]
-    rx, ry, rz = rx[4:], ry[4:], rz[4:]
-    vx, vy, vz = vx[4:], vy[4:], vz[4:]
+def clean_data(strip_amount, masses, rx, ry, rz, vx, vy, vz):
+    x = strip_amount
+    masses = masses[x:]
+    rx, ry, rz = rx[x:], ry[x:], rz[x:]
+    vx, vy, vz = vx[x:], vy[x:], vz[x:]
     return masses, rx, ry, rz, vx, vy, vz
 
 
@@ -37,7 +39,7 @@ def get_single_data(filename):
     return data
 
 
-def save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz, dest, index):
+def save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz, dest, index=""):
     np.savetxt(dest+"/masses{}.csv".format(index), masses, delimiter=",")
     np.savetxt(dest+"/pos_x{}.csv".format(index), pos_x, delimiter=",")
     np.savetxt(dest+"/pos_y{}.csv".format(index), pos_y, delimiter=",")
@@ -243,8 +245,8 @@ def gen_filament(Number_Clusters, Bodies_per_Cluster, mass_spread,
         z_pos = cluster[3]
         progress = np.add(filament_progression(
                         standard_progress[0], standard_progress[1],
-                        standard_progress[2]), prev_com)
-
+                        standard_progress[2]), prev_com, dtype="float64")
+        #print(progress)
         x_pos = np.add(x_pos, progress[0])
         y_pos = np.add(y_pos, progress[1])
         z_pos = np.add(z_pos, progress[2])
@@ -256,14 +258,18 @@ def gen_filament(Number_Clusters, Bodies_per_Cluster, mass_spread,
                         np.append(cluster_list[4], cluster[4]),
                         np.append(cluster_list[5], cluster[5]),
                         np.append(cluster_list[6], cluster[6])]
-
         prev_com = get_com((x_pos, y_pos, z_pos), cluster[0])
+    for index, array in enumerate(cluster_list):
+        cluster_list[index] = cluster_list[index][N:]
+
     return cluster_list
 
 
 def filament_progression(x, y, z):
-    x_spread = np.random.randint((x-(x/10)), (x+(x/10)))
-    y_spread = np.random.randint(-y/2, y/2)
-    z_spread = np.random.randint(-z/2, z/2)
-    result = np.array((x_spread, y_spread, z_spread))
+    x_spread = random.randrange(int(x-(x/10000)), int(x+(x/10000)), int(x/100000))
+    y_spread = random.randrange(int(-y/2), int(y/2), int(y/100))
+    z_spread = random.randrange(int(-z/2), int(z/2), int(z/100))
+    print(z_spread)
+    result = np.array((x_spread, y_spread, z_spread), dtype="float64")
+    #print(result)
     return result
