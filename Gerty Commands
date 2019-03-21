@@ -1,0 +1,21 @@
+scp -r gerty:~/File ~/Documents/Code
+ssh gerty
+source /home/soft/Python3Setup.csh
+nohup ipython orbit_functions.py && Integrator.py &
+
+RUN CODE
+
+
+
+SET UP KEYLESS SSH
+ssh-keygen -t rsa
+"No passphrase"
+ssh-copy-id c1111111@physxlogin02.astro.cf.ac.uk
+
+ssh-key-gen -t rsa
+"No passphrase"
+ssh-copy-id c1111111@gerty
+
+exit
+exit
+ssh gerty
