@@ -15,11 +15,11 @@ import Integrator
 Integrator.simulate("/home/josh/Documents/Binary_analysis",
                     False,
                     init_conds_directory = "/home/josh/Documents/Binary_analysis",
-                    report_pos=1)
+                    report_pos=100)
 
 # %%
 """
-run_name = "/run3"
+run_name = "/run4"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -51,7 +51,7 @@ for i in range(len(x[0])):
     else: col = "y"
     #p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
     #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
-    p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col)
+    #p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col)
     p1.scatter(x[0, i], y[0, i], z[0, i], color="y")
 fig.show()
 fig = plt.savefig("positions.pdf")
