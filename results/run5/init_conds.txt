@@ -1,0 +1,8 @@
+N_cluster=15
+N=3
+mass_distribution=10
+body_position_distribution=2000
+seed=124
+cluster_prog_x=30800000000000000
+cluster_prog_y=74800000000000
+cluster_prog_z=74800000000000

@@ -6,7 +6,7 @@ import Integrator
 init_file="/init_conds.txt"
 direc = "/home/ug/c1672922/results/run6"
 
-Integrator.simulate(direc, False, init_conds_name=init_file)
+Integrator.simulate(direc, False, init_conds_name=init_file, report_pos=100)
 
 """
 

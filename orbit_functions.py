@@ -19,10 +19,10 @@ pc = 3.0857e16
 def get_data_ready(filename, num_to_strip=0):
     with open(filename) as f:
         ncols = len(f.readline().split(","))
-
     masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",",
-                                                   usecols=range(1, ncols))
-    masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses, rx, ry, rz, vx, vy, vz)
+                                                   usecols=range(ncols))
+    masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses,
+                                                rx, ry, rz, vx, vy, vz)
     return masses, rx, ry, rz, vx, vy, vz
 
 
@@ -57,6 +57,14 @@ def get_init_conds(filename):
             info = line.split("=")
             data.append(info[1])
     return data
+
+def clean_results_files(direc):
+    file_names = ["/cluster.csv", "/masses.csv",
+                  "/sim_time.csv", "/run_time.csv",
+                  "/pos_x.csv", "/pos_y.csv", "/pos_z.csv",
+                  "/vel_x.csv", "/vel_y.csv", "/vel_z.csv"]
+    for i in file_names:
+        with open(direc + i, "w"): pass
 
 
 def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
