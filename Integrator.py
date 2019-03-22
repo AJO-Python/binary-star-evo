@@ -8,6 +8,7 @@ Created on Thu Oct 18 14:43:24 2018
 import orbit_functions as of
 import numpy as np
 import time
+import os
 
 # =============================================================================
 # Setting up system
@@ -27,6 +28,8 @@ def simulate(destination_directory, CONT_PREVIOUS,
              init_conds_directory="/home/ug/c1672922/code",
              source_directory="",
              report_pos=100):
+    source_cp = "cp " + init_conds_directory + init_conds_name
+    os.popen(source_cp + " " + destination_directory + init_conds_name)
 
     if not CONT_PREVIOUS:
         # Getting init_conds for simulation
@@ -35,14 +38,13 @@ def simulate(destination_directory, CONT_PREVIOUS,
         init_vars = [int(i) for i in init_vars]
         progression = list((init_vars[-3], init_vars[-2], init_vars[-1]))
         init_vars = init_vars[0:-3]
-        num_to_strip = init_vars[1]
+        num_to_strip = init_vars[1]-1
         # Generating initial_data
         cluster_list = of.gen_filament(*init_vars, *progression)
         # Saving init_conds to file
         cluster_text = "/cluster.csv"
         file_loc = destination_directory + cluster_text
         np.savetxt(file_loc, cluster_list, delimiter=",")
-        time.sleep(1)
         # Loading in data
         masses, rx, ry, rz, vx, vy, vz = of.get_data_ready(file_loc,
                                                            num_to_strip)

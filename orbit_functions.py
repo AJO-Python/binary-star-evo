@@ -22,7 +22,7 @@ def get_data_ready(filename, num_to_strip=0):
 
     masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",",
                                                    usecols=range(1, ncols))
-    #masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses, rx, ry, rz, vx, vy, vz)
+    masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses, rx, ry, rz, vx, vy, vz)
     return masses, rx, ry, rz, vx, vy, vz
 
 
