@@ -47,6 +47,7 @@ def simulate(destination_directory, CONT_PREVIOUS,
         masses, rx, ry, rz, vx, vy, vz = of.get_data_ready(file_loc,
                                                            num_to_strip)
         N = len(masses)
+        print(N)
 
     elif CONT_PREVIOUS:
         masses = of.get_single_data(source_directory+"/masses.csv")
@@ -77,7 +78,7 @@ def simulate(destination_directory, CONT_PREVIOUS,
     time_to_run = []
     sim_time = []
     start = time.time()
-    while count >= :  # Iterating through by dt to Tmax
+    while count <= 1000000:  # Iterating through by dt to Tmax
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt
