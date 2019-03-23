@@ -3,11 +3,17 @@ ssh gerty
 source /home/soft/Python3Setup.csh
 nohup ipython orbit_functions.py && Integrator.py &
 
-RUN CODE
-
-
-
+======================================================
+.bashrc setup
+======================================================
+alias push_to_gerty="scp /home/josh/binary-star-evo/*.py /home/josh/binary-star-evo/init_conds.txt c1672922@gerty:~/code"
+alias simulate_on_gerty="push_to_gerty && ssh gerty 'cd ~/code; source /home/soft/Python3Setup.csh; nohup ipython orbit.py &; exit &' &"
+alias download_gerty_data="scp -rT c1672922@gerty:~/results /home/josh/binary-star-evo"
+alias kill_all_gerty="ssh gerty 'pkill ipython &' &"
+alias check_gerty="ssh gerty 'pgrep ipython &' &"
+=====================================================
 SET UP KEYLESS SSH
+=====================================================
 ssh-keygen -t rsa
 "No passphrase"
 ssh-copy-id c1111111@physxlogin02.astro.cf.ac.uk

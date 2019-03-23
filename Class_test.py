@@ -16,28 +16,25 @@ class body:
     ID = 0
     total_mass = 0
 
-    def __init__(self, mass, position, velocity, order=1, potential=0):
+    def __init__(self, mass, position, velocity, order=1, base=[]):
         self.mass = mass
         self.position = position
         self.velocity = velocity
         self.ID = body.ID
         self.order = order
-        self.potential = potential
+        if self.order == 1:
+            self.base = self.ID
         body.num_bodies += 1
         body.ID += 1
         body.total_mass += mass
 
-    def combine(self, body2):
-        # Finds resultant mass, pos, vel
-        # Combines into new body
-        # Does not redefine "self" so unique ID is generated
-        # for the binary body object
-        mass = self.mass + body2.mass
-        pos, vel = body.merge_pos_vel(self, body2)
-        order_binary = self.order + body2.order
-        pot = self.potential + body2.potential
-        body.num_bodies -= 2
-        return body(mass, pos, vel, order=order_binary, potential=pot)
+    def show_atts(self):
+        print("ID: ", self.ID)
+        print("Order: ", self.order)
+        print("Mass: ", self.mass)
+        print("Position: ", self.position)
+        print("Velocity: ", self.velocity)
+        print()
 
     def merge_pos_vel(self, body2):
         pos = [(self.position[0]+body2.position[0])/2,
@@ -50,28 +47,50 @@ class body:
 
 
 def main():
-    body_list = create_body_objects("./results/run5")
+    body_list = create_body_objects("./results/run6")
+    binary_index = []
+    master_list = []
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None
         index1, index2, binary_body = get_binary(body_list)
         body_list.append(binary_body)
+        binary_index.append([[index1, index2], binary_body.ID])
+
+        print(sorted([index1, index2]))
+        binary_body.show_atts()
+
         for i in sorted([index1, index2], reverse=True):
-            del body_list[1]
+            del body_list[i]
             # print("len bodies after del: ", len(body_list))
 
     if body.total_mass == body_list[0].mass:
-        return body_list
+        return body_list, binary_index
     else:
         print("MASS NOT CONSERVED")
         print(body.total_mass)
         print(body_list[0].mass)
-        return body_list
+        return body_list, binary_index
+
+"""
+
+body_list_original = body_list
+all_boddies = body_list
+
+while len(body_list) > 1:
+    binary = find_binary(body_list)
+    body_list.append(binary)
+    all_bodies.append(binary)
+    for i in index_to_delete:
+        del body_list
+
+
+"""
+
 
 
 def get_binary(body_list):
     target1_ID, target2_ID, pot = get_most_bound(body_list)
     index1, index2, binary_body = get_index(target1_ID, target2_ID, body_list)
-    binary_body.potential += pot
     return index1, index2, binary_body
 
 
@@ -101,16 +120,6 @@ def get_all_pot_energy(body_list):
                 pair_energy_dict["{}-{}".format(main_body.ID,
                                  target_body.ID)] = pair_energy
                 done_pairs.append(pair_ref)
-                try:
-                    temp = list(pair_energy_dict.values())
-                    temp.sort()
-                except:
-                    print("===============================================")
-                    print("BROKEN BELOW THIS LINE")
-                    print("masses: ", main_body.mass, target_body.mass)
-                    print("positions: ", main_body.position, target_body.position)
-                    print("pair energy: ", pair_energy)
-                    raise SystemExit(0)
     return pair_energy_dict
 
 
@@ -127,16 +136,16 @@ def get_largest_potential(dictionary):
 
 
 def get_index(id1, id2, body_list):
-        for index, body in enumerate(body_list):
-            if body.ID == id1:
-                index1 = index
-                body1 = body
-            elif body.ID == id2:
-                index2 = index
-                body2 = body
-        body = body1.combine(body2)
-        print(body1.order, " + ", body2.order, " = ", body.order)
-        return index1, index2, body
+    body1, body2 = None, None
+    for index, body in enumerate(body_list):
+        if body.ID == id1:
+            index1 = index
+            body1 = body
+        elif body.ID == id2:
+            index2 = index
+            body2 = body
+    body = combine(body1, body2)
+    return index1, index2, body
 
 
 def create_body_objects(directory):
@@ -157,6 +166,16 @@ def create_body_objects(directory):
 
     return body_list_create
 
+def combine(body1, body2):
+    # Finds resultant mass, pos, vel
+    # Combines into new body
+    # Does not redefine "body1" so unique ID is generated
+    # for the binary body object
+    mass = body1.mass + body2.mass
+    pos, vel = body1.merge_pos_vel(body2)
+    order_binary = body1.order + body2.order
+    body.num_bodies -= 2
+    return body(mass, pos, vel, order=order_binary)
 
-body_list = main()
+body_list, binary_index = main()
 

@@ -8,6 +8,16 @@ direc = "/home/ug/c1672922/results/run6"
 
 Integrator.simulate(direc, False, init_conds_name=init_file, report_pos=100)
 
+#Integrator.simulate(
+#        destination_directory, ----> Directory to save results in
+#        CONT_PREVIOUS,		----> Continue from previous data
+#        save_suffix=,		----> eg "masses{save_suffix}.csv"
+#        init_conds_name=,	----> Name of initial conditions file
+#        init_conds_directory=,	----> Location of initial conds file
+#        source_directory=,	----> Location of previous data for conitinuing
+#        report_pos=100		----> Frequency of data saves (in time steps)
+
+
 """
 
 run1 = some old test. Who knows?

@@ -21,7 +21,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/run5"
+run_name = "/run6"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -65,7 +65,8 @@ p1.set_ylim3d(min_max(y))
 p1.set_zlim3d(min_max(z))
 for j in range(N_cluster):  # looping through cluster index
     col = random.choice(colors_list)
-    for i in range(len(x[0])):  # looping through bodies index
+    #for i in range(len(x[0])):  # looping through bodies index
+    for i in range(8, 11):
         if i >= N*j and i < N*(j+1):
             p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
