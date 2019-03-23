@@ -11,8 +11,13 @@ import random
 G = 6.674e-11
 au = 1.49597e11
 pc = 3.0857e16
+
 # =============================================================================
 # Functions
+# =============================================================================
+
+# =============================================================================
+# DATA HANDLING
 # =============================================================================
 
 
@@ -20,7 +25,7 @@ def get_data_ready(filename, num_to_strip=0):
     with open(filename) as f:
         ncols = len(f.readline().split(","))
     masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",",
-                                                   usecols=range(ncols))
+                                                   ncols=(range(1, ncols)))
     masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses,
                                                 rx, ry, rz, vx, vy, vz)
     return masses, rx, ry, rz, vx, vy, vz
@@ -58,13 +63,15 @@ def get_init_conds(filename):
             data.append(info[1])
     return data
 
+
 def clean_results_files(direc):
     file_names = ["/cluster.csv", "/masses.csv",
                   "/sim_time.csv", "/run_time.csv",
                   "/pos_x.csv", "/pos_y.csv", "/pos_z.csv",
                   "/vel_x.csv", "/vel_y.csv", "/vel_z.csv"]
     for i in file_names:
-        with open(direc + i, "w"): pass
+        with open(direc + i, "w"):
+            pass
 
 
 def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
@@ -96,6 +103,10 @@ def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
             sum(kinetic_body), sum(potential_body)*0.5, sum(momentum_body))
     return pos_x, pos_y, pos_z, Ek, Ep, Mom
 
+# =============================================================================
+# INTEGRATOR
+# =============================================================================
+
 
 def get_accel_soft(N, x, y, z, m, r_min, eps):
     mag_r_min = get_mag(r_min)
@@ -123,6 +134,10 @@ def get_accel_soft(N, x, y, z, m, r_min, eps):
                 ay[i] += f * y_diff
                 az[i] += f * z_diff
     return ax, ay, az, r_min
+
+# =============================================================================
+# GET INFORMATION
+# =============================================================================
 
 
 def get_momentum(v, m):
@@ -157,18 +172,14 @@ def get_total_potential(N, masses, positions):
     return potential
 
 
-def get_com(position, mass):
-    com_x = np.average(position[0], axis=0, weights=mass)
-    com_y = np.average(position[1], axis=0, weights=mass)
-    com_z = np.average(position[2], axis=0, weights=mass)
-    com = np.array([com_x, com_y, com_z])
-    return com
-
-
-def adjust_pos(position, com):
-    for i in range(0, len(position)):
-        position[i] = np.subtract(position[i], com[i])
-    return position
+def get_group_vel(masses, velocities):
+    total_mass = sum(masses)
+    x, y, z = 0, 0, 0
+    for index, mass in enumerate(masses):
+        x += velocities[0][index] * mass
+        y += velocities[1][index] * mass
+        z += velocities[2][index] * mass
+    return x/total_mass, y/total_mass, z/total_mass
 
 
 def get_completion(time, time_max, done):
@@ -181,6 +192,9 @@ def get_completion(time, time_max, done):
                 return done
     if done == done_temp:
         return done
+# =============================================================================
+# GENERATION
+# =============================================================================
 
 
 def gen_masses(N):
@@ -191,6 +205,20 @@ def gen_masses(N):
 
 def gen_xyz(N, spread):
     return np.random.normal(0, spread, (3, N))
+
+
+def get_com(position, mass):
+    com_x = np.average(position[0], axis=0, weights=mass)
+    com_y = np.average(position[1], axis=0, weights=mass)
+    com_z = np.average(position[2], axis=0, weights=mass)
+    com = np.array([com_x, com_y, com_z])
+    return com
+
+
+def adjust_pos(position, com):
+    for i in range(0, len(position)):
+        position[i] = np.subtract(position[i], com[i])
+    return position
 
 
 def gen_cluster(N, mass_dist, pos_dist):
@@ -225,16 +253,6 @@ def scale_vels(masses, init_vels, positions, virial):
     y = y*const
     z = z*const
     return x, y, z
-
-
-def get_group_vel(masses, velocities):
-    total_mass = sum(masses)
-    x, y, z = 0, 0, 0
-    for index, mass in enumerate(masses):
-        x += velocities[0][index] * mass
-        y += velocities[1][index] * mass
-        z += velocities[2][index] * mass
-    return x/total_mass, y/total_mass, z/total_mass
 
 
 def gen_filament(Number_Clusters, Bodies_per_Cluster, mass_spread,
@@ -278,3 +296,23 @@ def filament_progression(x, y, z):
     z_spread = random.randrange(int(-z/2), int(z/2), int(z/100))
     result = np.array((x_spread, y_spread, z_spread), dtype="float64")
     return result
+
+# =============================================================================
+# GRAPHING
+# =============================================================================
+
+
+def min_max(array):
+    current_min = 9e99
+    current_max = -9e99
+    for i in array:
+        if min(i) < current_min:
+            current_min = min(i)
+        if max(i) > current_max:
+            current_max = max(i)
+    return current_min, current_max
+
+def strip_trailing_data(x, y, z):
+    max_length = min(len(x), len(y), len(z))
+    x, y, z = x[:max_length], y[:max_length], z[:max_length]
+    return x, y, z

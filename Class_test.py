@@ -47,7 +47,7 @@ class body:
 
 
 def main():
-    body_list = create_body_objects("./results/run6")
+    body_list = create_body_objects("./results/run4")
     binary_index = []
     master_list = []
     while len(body_list) > 1:  # Recalculating after every binary is found
