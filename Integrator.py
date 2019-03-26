@@ -4,12 +4,11 @@ Created on Thu Oct 18 14:43:24 2018
 
 @author: c1672922
 """
-
-import orbit_functions as of
-import numpy as np
-import time
 import os
-
+import sys
+import time
+import numpy as np
+import orbit_functions as of
 # =============================================================================
 # Setting up system
 # =============================================================================

@@ -21,7 +21,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/run5"
+run_name = "/run4"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -40,7 +40,6 @@ init_vars = of.get_init_conds(direc + "/init_conds.txt")
 N = int(init_vars[1])
 N_cluster = int(init_vars[0])
 
-
 colors_list = list(colors._colors_full_map.values())
 plot_pos = 1
 
@@ -51,13 +50,14 @@ p1.set_ylim3d(of.min_max(y))
 p1.set_zlim3d(of.min_max(z))
 for j in range(N_cluster):  # looping through cluster index
     col = random.choice(colors_list)
-    for i in range(len(x[0])):  # looping through bodies index
+    for i in [33, 34, 35, 36]:
+    #for i in range(len(x[0])):  # looping through bodies index
     #for i in range(32, 36):
         if i >= N*j and i < N*(j+1):
-            #p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
+            p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
-            #p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
+            p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
         else:
             pass
 
