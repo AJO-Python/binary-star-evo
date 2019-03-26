@@ -55,7 +55,8 @@ def main_loop(run_name):  # e.g "results2.py"
     inital_bodies = len(body_list)
     highest_order = 0
     counter = 0
-
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
         # Getting the most bound binary and the indexes of the bodies

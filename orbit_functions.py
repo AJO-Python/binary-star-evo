@@ -291,9 +291,9 @@ def gen_filament(Number_Clusters, Bodies_per_Cluster, mass_spread,
 
 
 def filament_progression(x, y, z):
-    x_spread = random.randrange(int(x-(x/10000)), int(x+(x/10000)), int(x/100000))
-    y_spread = random.randrange(int(-y/2), int(y/2), int(y/100))
-    z_spread = random.randrange(int(-z/2), int(z/2), int(z/100))
+    x_spread = random.randrange(int(x-(x/10000)), int(x+(x/10000)), int(x/1000000))
+    y_spread = random.randrange(int(-y/2), int(y/2), int(y/1000))
+    z_spread = random.randrange(int(-z/2), int(z/2), int(z/1000))
     result = np.array((x_spread, y_spread, z_spread), dtype="float64")
     return result
 

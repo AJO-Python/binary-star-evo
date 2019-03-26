@@ -12,6 +12,7 @@ import orbit_functions as of
 import Integrator
 import matplotlib.colors as colors
 import random
+random.seed(124)
 
 """
 Integrator.simulate("/home/josh/binary-star-evo/results/run5",
@@ -21,7 +22,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/run4"
+run_name = "/run6"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -45,14 +46,20 @@ plot_pos = 1
 
 fig = plt.figure()
 p1 = Axes3D(fig)
-p1.set_xlim3d(of.min_max(x))
-p1.set_ylim3d(of.min_max(y))
-p1.set_zlim3d(of.min_max(z))
+
+#p1.set_xlim3d(of.min_max(x))
+#p1.set_ylim3d(of.min_max(y))
+#p1.set_zlim3d(of.min_max(z))
+
+p1.set_xlim3d(0, 5e16)
+p1.set_ylim3d(-2e16, 2e16)
+p1.set_zlim3d(-2e16, 2e16)
+
+
 for j in range(N_cluster):  # looping through cluster index
     col = random.choice(colors_list)
-    for i in [33, 34, 35, 36]:
-    #for i in range(len(x[0])):  # looping through bodies index
-    #for i in range(32, 36):
+    #for i in [33, 34, 35, 36]:
+    for i in range(len(x[0])):  # looping through bodies index
         if i >= N*j and i < N*(j+1):
             p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
