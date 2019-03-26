@@ -59,38 +59,21 @@ def main_loop(run_name):  # e.g "results2.py"
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
         # Getting the most bound binary and the indexes of the bodies
-        index1, index2, binary_body = get_binary(body_list)
+        index1, index2, binary_body, body1_ID, body2_ID = get_binary(body_list)
         # Storing the data
 # ------> all_bodies.append(binary_body)
-        binary_index[binary_body.ID] = str(index1) + str(index2)
+        binary_index[binary_body.ID] = str(body1_ID) + "-" + str(body2_ID)
         # Replacing the 2 most bound with a single binary object
-        print("len list:", len(body_list))
-        print("Adding binary...")
         body_list.append(binary_body)
-        print(len(body_list))
+        all_bodies.append(binary_body)
         # Sorting and reversing the indexes to guarantee the indexes
         # do not change after the first del()
         for i in sorted([index1, index2], reverse=True):
             del body_list[i]
-            print("Deleting index: ", i)
-            print("len body list: ", len(body_list))
-        # Displaying data for debug purposes
-        binary_body.show_atts()
         if binary_body.order > highest_order:
             highest_order = binary_body.order
         counter += 1
-        print("End of loop: {}".format(counter))
-
-    # Checking if mass has been conserved in the process
-    # True if all the bodies are added together only once
-    # Sanity check that function is working as intended
-    if abs(body.total_mass-body_list[-1].mass) < 1e27:
-        return body_list, binary_index
-    else:
-        print("MASS NOT CONSERVED")
-        print(body.total_mass)
-        print(body_list[-1].mass)
-        return body_list, binary_index
+    return all_bodies, binary_index
 
 
 def get_binary(body_list):
@@ -98,7 +81,7 @@ def get_binary(body_list):
     index1, index2, binary_body = get_index(target1_ID,
                                                       target2_ID,
                                                       body_list)
-    return index1, index2, binary_body
+    return index1, index2, binary_body, target1_ID, target2_ID
 
 
 def get_most_bound(body_list):
@@ -177,8 +160,8 @@ def combine(body1, body2):
     mass, pos, vel, order_binary = merge(body1, body2)
     body.total_mass -= mass
     body.num_bodies -= 2
-    #base_comp = str(body1.base) + "-" + str(body2.base) + ", "
-    return body(mass, pos, vel, order=order_binary)
+    base_components = str(body1.base) + str(body2.base)
+    return body(mass, pos, vel, order=order_binary, base=base_components)
 
 def merge(body1, body2):
     mass = body1.mass + body2.mass
