@@ -22,7 +22,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/run6"
+run_name = "/calibrated_long_run"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -51,9 +51,9 @@ p1 = Axes3D(fig)
 #p1.set_ylim3d(of.min_max(y))
 #p1.set_zlim3d(of.min_max(z))
 
-p1.set_xlim3d(0, 5e16)
-p1.set_ylim3d(-2e16, 2e16)
-p1.set_zlim3d(-2e16, 2e16)
+p1.set_xlim3d(0, 2e16)
+p1.set_ylim3d(-5e15, 5e15)
+p1.set_zlim3d(-5e15, 5e15)
 
 
 for j in range(N_cluster):  # looping through cluster index

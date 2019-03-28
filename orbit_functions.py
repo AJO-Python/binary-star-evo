@@ -45,13 +45,12 @@ def get_single_data(filename):
 
 
 def save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz, dest, index=""):
-    np.savetxt(dest+"/masses{}.csv".format(index), masses, delimiter=",")
-    np.savetxt(dest+"/pos_x{}.csv".format(index), pos_x, delimiter=",")
-    np.savetxt(dest+"/pos_y{}.csv".format(index), pos_y, delimiter=",")
-    np.savetxt(dest+"/pos_z{}.csv".format(index), pos_z, delimiter=",")
-    np.savetxt(dest+"/vel_x{}.csv".format(index), vx, delimiter=",")
-    np.savetxt(dest+"/vel_y{}.csv".format(index), vy, delimiter=",")
-    np.savetxt(dest+"/vel_z{}.csv".format(index), vz, delimiter=",")
+    vel_x, vel_y, vel_z = vx, vy, vz
+    file_names = [masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z]
+    for file in file_names:
+        file_dir = dest + "/" + str(file) + ".csv"
+        with open(file_dir, "wb") as f:
+            np.savetxt(f, file, delimiter=",")
 
 
 def get_init_conds(filename):
