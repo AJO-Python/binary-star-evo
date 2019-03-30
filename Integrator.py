@@ -18,32 +18,25 @@ eps = 5e6
 pc = 3.0857e16
 au = 1.49597e11
 
-#if __name__ == __main__:
-#    simulate("/home/ug/c1672922/code", False)
 
-
-
-def simulate(destination_directory, CONT_PREVIOUS,
+def simulate(destination_directory, CONT_PREVIOUS=False,
              save_suffix="",
              init_conds_name="/init_conds.txt",
              init_conds_directory="/home/ug/c1672922/code",
              source_directory="",
              report_pos=100):
+
+    # Saving "init_conds.txt" to results directory for easy access later
     source_cp = "cp " + init_conds_directory + init_conds_name
     os.popen(source_cp + " " + destination_directory + init_conds_name)
 
     if not CONT_PREVIOUS:
         # Getting init_conds for simulation
         # Formatting of data
-        of.clean_results_files(destination_directory)
-        init_vars = of.get_init_conds(init_conds_directory + init_conds_name)
-        init_vars = [int(i) for i in init_vars]
-        progression = list((init_vars[-3], init_vars[-2], init_vars[-1]))
-        init_vars = init_vars[0:-3]
-        num_to_strip=0
-        #num_to_strip = init_vars[1]-1
-        # Generating initial_data
-        cluster_list = of.gen_filament(*init_vars, *progression)
+        cluster_list = of.generate_full_filament(destination_directory,
+                                                 init_conds_directory,
+                                                 init_conds_name)
+        num_to_strip = 0
         # Saving init_conds to file
         cluster_text = "/cluster.csv"
         file_loc = destination_directory + cluster_text
@@ -82,7 +75,7 @@ def simulate(destination_directory, CONT_PREVIOUS,
     time_to_run = []
     sim_time = []
     start = time.time()
-    while count >= 0:  # Iterating through by dt to Tmax
+    while count <= 100:  # Iterating through by dt to Tmax
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt

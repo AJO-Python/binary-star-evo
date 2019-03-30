@@ -6,13 +6,14 @@ Created on Tue Mar 19 15:10:24 2019
 @author: josh
 """
 
+import os
 import numpy as np
 import orbit_functions as of
 import sys
 np.random.seed(123)
 
 
-class body:
+class body_class:
     # Class count of how many bodies have been created
     # and what the unique ID counter and total system mass are
     num_bodies = 0
@@ -23,8 +24,8 @@ class body:
         self.mass = mass
         self.position = position
         self.velocity = velocity
-        self.ID = body.ID
         self.order = order
+        self.ID = body_class.ID # Assigning unique ID
         # Checking if the star is a single or multiple already
         if self.order == 1:
             self.base = str(self.ID)  # setting the base to the ID if single
@@ -32,9 +33,9 @@ class body:
             self.base = base # Setting base to the passed in argument
                              # of "base". This is the IDs of the base objects
         # Mainting the class counters
-        body.num_bodies += 1
-        body.ID += 1
-        body.total_mass += mass
+        body_class.num_bodies += 1
+        body_class.ID += 1
+        body_class.total_mass += mass
 
     def show_atts(self):
         # Used to print all attributes of a body
@@ -47,16 +48,33 @@ class body:
         print()
 
 
-def main_loop(run_name):  # e.g "results2.py"
-    body_list = create_body_objects("./results/" + run_name)
+class binary:
+    # Describes a system comprised of two bodies
+
+
+    def __init__(self, binary_ID): # Initialise with combined binary body
+        body1, body2 = binary_index[binary_ID]
+        print(body1, body2)
+        # Setting binary up as
+        self.ID = binary_ID
+        self.mass = body.mass
+        self.com = body.podition
+        self.velocity = body.velocity
+        self.ID = body.ID
+        self.order = body.order
+
+
+
+def detect_binaries(run_name):  # e.g "results2.py"
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    body_list = create_body_objects(dir_path + "/results/" + run_name)
 
     all_bodies = [body for body in body_list]
     binary_index = {}
     inital_bodies = len(body_list)
     highest_order = 0
     counter = 0
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
+
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
         # Getting the most bound binary and the indexes of the bodies
@@ -149,32 +167,39 @@ def create_body_objects(directory):
     vel_z = of.get_single_data(directory + "/vel_z.csv")
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
+    print(len(masses))
+    print(len(pos_x))
     for index, mass in enumerate(masses):
-        temp_body = body(mass,
+        temp_body = body_class(mass,
                          [pos_x[index], pos_y[index], pos_z[index]],
                          [vel_x[index], vel_y[index], vel_z[index]])
         body_list_create.append(temp_body)
 
     return body_list_create
 
+
 def combine(body1, body2):
     mass, pos, vel, order_binary = merge(body1, body2)
-    body.total_mass -= mass
-    body.num_bodies -= 2
+    body_class.total_mass -= mass
+    body_class.num_bodies -= 2
     base_components = str(body1.base) + str(body2.base)
-    return body(mass, pos, vel, order=order_binary, base=base_components)
+    return body_class(mass, pos, vel, order=order_binary, base=base_components)
+
 
 def merge(body1, body2):
-    mass = body1.mass + body2.mass
+    m1 = body1.mass
+    m2 = body2.mass
+    mass = m1 + m2
     order_binary = body1.order + body2.order
-    pos = [(body1.position[0]+body2.position[0])/2,
-            (body1.position[1]+body2.position[1])/2,
-            (body1.position[2]+body2.position[2])/2]
-    vel = [(body1.velocity[0]+body2.velocity[0])/2,
-            (body1.velocity[1]+body2.velocity[1])/2,
-            (body1.velocity[2]+body2.velocity[2])/2]
+    pos = [(body1.position[0]*m1+body2.position[0]*m2)/2*mass,
+           (body1.position[1]*m1+body2.position[1]*m2)/2*mass,
+           (body1.position[2]*m1+body2.position[2]*m2)/2*mass]
+    vel = [(body1.velocity[0]*m1+body2.velocity[0]*m2)/2*mass,
+           (body1.velocity[1]*m1+body2.velocity[1]*m2)/2*mass,
+           (body1.velocity[2]*m1+body2.velocity[2]*m2)/2*mass]
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = main_loop("run4")
+body_list, binary_index = detect_binaries("run7")
 
+test = binary(46)
