@@ -1,8 +1,0 @@
-N_cluster=1
-N=3
-mass_distribution=10
-body_position_distribution=2000
-seed=124
-cluster_prog_x=3080000000000000
-cluster_prog_y=400000000000000
-cluster_prog_z=400000000000000

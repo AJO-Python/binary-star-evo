@@ -22,7 +22,7 @@ au = 1.49597e11
 def simulate(destination_directory, CONT_PREVIOUS=False,
              save_suffix="",
              init_conds_name="/init_conds.txt",
-             init_conds_directory="/home/ug/c1672922/code",
+             init_conds_directory="/home/ug/c1672922/binary-star-evo",
              source_directory="",
              report_pos=100):
 
@@ -75,7 +75,7 @@ def simulate(destination_directory, CONT_PREVIOUS=False,
     time_to_run = []
     sim_time = []
     start = time.time()
-    while count <= 1000:  # Iterating through by dt to Tmax
+    while count >= 0:  # Iterating through by dt to Tmax
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt
