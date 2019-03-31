@@ -75,7 +75,7 @@ def simulate(destination_directory, CONT_PREVIOUS=False,
     time_to_run = []
     sim_time = []
     start = time.time()
-    while count <= 100:  # Iterating through by dt to Tmax
+    while count <= 1000:  # Iterating through by dt to Tmax
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt
@@ -129,3 +129,5 @@ def simulate(destination_directory, CONT_PREVIOUS=False,
         time_count.append(t)
         t += dt
         count += 1
+
+simulate("/home/josh/binary-star-evo/results/test", init_conds_directory="/home/josh/binary-star-evo", report_pos=10)

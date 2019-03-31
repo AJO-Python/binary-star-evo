@@ -12,6 +12,14 @@ import orbit_functions as of
 import sys
 np.random.seed(123)
 
+"""
+TODO:
+    Error is overflow giving pair_energy = NaN
+    Check dtype of all array. Want int64
+    Maybe float64???????
+
+"""
+
 
 class body_class:
     # Class count of how many bodies have been created
@@ -66,27 +74,32 @@ class binary:
 
 def detect_binaries(run_name):  # e.g "results2.py"
     dir_path = os.path.dirname(os.path.realpath(__file__))
+
     body_list = create_body_objects(dir_path + "/results/" + run_name)
     all_bodies = [body for body in body_list]
+
     binary_index = {}
-    inital_bodies = len(body_list)
     highest_order = 0
     counter = 0
-    print("Made it to \"while\" loop")
 
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
+
         # Getting the most bound binary and the indexes of the bodies
         index1, index2, binary_body, body1_ID, body2_ID = get_binary(body_list)
+
         # Storing the data
         binary_index[binary_body.ID] = str(body1_ID) + "-" + str(body2_ID)
+
         # Replacing the 2 most bound with a single binary object
         body_list.append(binary_body)
         all_bodies.append(binary_body)
+
         # Sorting and reversing the indexes to guarantee the indexes
         # do not change after the first del()
         for i in sorted([index1, index2], reverse=True):
             del body_list[i]
+
         # Checking for highest order binary - Should == N
         if binary_body.order > highest_order:
             highest_order = binary_body.order
@@ -118,12 +131,19 @@ def get_all_pot_energy(body_list):
             target_body = j
             pair_ref = sorted([main_body.ID, target_body.ID])
 
+            # Ensuring no 1-->2 and 2-->1 calculation
+            # No interaction with self either
             if (i == j) or (pair_ref in done_pairs):
                 pass
             else:
                 pair_energy = of.get_grav_potential(
                         main_body.mass, target_body.mass,
                         main_body.position, target_body.position)
+
+                # Checking if pair_energy has failed
+                if np.isnan(pair_energy):
+                    print(i.ID, j.ID)
+                    raise ValueError("pair_energy in get_all_pot_energy is nan")
 
                 pair_energy_dict["{}-{}".format(main_body.ID,
                                  target_body.ID)] = pair_energy
@@ -138,6 +158,9 @@ def get_largest_potential(dictionary):
     for ID, pot in dictionary.items():
         if pot == target_potential:
             target_ID = ID
+            break
+    if target_ID == None:
+        raise ValueError("Target bodies not found in: get_largest_potential")
     target1_ID, target2_ID = target_ID.split("-")
     target1_ID, target2_ID = int(target1_ID), int(target2_ID)
     return target1_ID, target2_ID, target_potential
@@ -164,15 +187,17 @@ def create_body_objects(directory):
     vel_x = of.get_single_data(directory + "/vel_x.csv")
     vel_y = of.get_single_data(directory + "/vel_y.csv")
     vel_z = of.get_single_data(directory + "/vel_z.csv")
-    print(len(masses))
-    print(len(pos_x))
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
     for index, mass in enumerate(masses):
-        temp_body = body_class(mass,
-                         [pos_x[index], pos_y[index], pos_z[index]],
-                         [vel_x[index], vel_y[index], vel_z[index]])
-        body_list_create.append(temp_body)
+        print(index)
+        if index > 21:  # ADDED
+            break
+        else:
+            pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
+            vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
+            temp_body = body_class(mass, pos, vel)
+            body_list_create.append(temp_body)
 
     return body_list_create
 
@@ -199,4 +224,4 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("run3")
+body_list, binary_index = detect_binaries("calibrated_long_run")

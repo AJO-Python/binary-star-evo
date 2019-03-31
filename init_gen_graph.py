@@ -26,7 +26,7 @@ init_vars = init_vars[0:-3]
 cluster_list = of.gen_filament(*init_vars, *progression)
 
 # Saving init_conds to file
-file_loc = "/home/josh/binary-star-evo/results/test/cluster.csv"
+file_loc = "/home/josh/binary-star-evo/results/" + RUN_NAME + "/cluster.csv"
 np.savetxt(file_loc, cluster_list, delimiter=",")
 # Loading in data
 masses, x, y, z, vx, vy, vz = of.get_data_ready(file_loc)

@@ -22,7 +22,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/3-body-test"
+run_name = "/test"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -52,11 +52,11 @@ p1 = Axes3D(fig)
 #p1.set_ylim3d(of.min_max(y))
 #p1.set_zlim3d(of.min_max(z))
 
-p1.plot(x, y[::,0], z[::,0])
+#p1.plot(x, y[::,0], z[::,0])
 
-"""
 
-x_dist = 2e16
+
+x_dist = 5e16
 
 p1.set_xlim3d(0, x_dist)
 p1.set_ylim3d(-x_dist/2, x_dist/2)
@@ -79,4 +79,3 @@ fig.show()
 # fig = plt.savefig("positions.pdf")
 
 
-"""
