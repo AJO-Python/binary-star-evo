@@ -22,7 +22,7 @@ Integrator.simulate("/home/josh/binary-star-evo/results/run5",
 """
 # %%
 
-run_name = "/run6"
+run_name = "/test"
 run_dir = "/home/josh/binary-star-evo/results"
 direc = run_dir + run_name
 
@@ -36,6 +36,7 @@ x = of.get_single_data(run_dir + run_name + "/pos_x.csv")
 y = of.get_single_data(run_dir + run_name + "/pos_y.csv")
 z = of.get_single_data(run_dir + run_name + "/pos_z.csv")
 x, y, z = of.strip_trailing_data(x, y, z)
+
 
 init_vars = of.get_init_conds(direc + "/init_conds.txt")
 N = int(init_vars[1])
@@ -51,16 +52,22 @@ p1 = Axes3D(fig)
 #p1.set_ylim3d(of.min_max(y))
 #p1.set_zlim3d(of.min_max(z))
 
-p1.set_xlim3d(0, 5e16)
-p1.set_ylim3d(-2e16, 2e16)
-p1.set_zlim3d(-2e16, 2e16)
+#p1.plot(x, y[::,0], z[::,0])
+
+
+
+x_dist = 5e16
+
+p1.set_xlim3d(0, x_dist)
+p1.set_ylim3d(-x_dist/2, x_dist/2)
+p1.set_zlim3d(-x_dist/2, x_dist/2)
 
 
 for j in range(N_cluster):  # looping through cluster index
     col = random.choice(colors_list)
     #for i in [33, 34, 35, 36]:
     for i in range(len(x[0])):  # looping through bodies index
-        if i >= N*j and i < N*(j+1):
+        if (i >= N*j and i < N*(j+1)) or (j==0 and i==0):
             p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
@@ -70,3 +77,5 @@ for j in range(N_cluster):  # looping through cluster index
 
 fig.show()
 # fig = plt.savefig("positions.pdf")
+
+

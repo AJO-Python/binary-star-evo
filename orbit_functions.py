@@ -24,8 +24,7 @@ pc = 3.0857e16
 def get_data_ready(filename, num_to_strip=0):
     with open(filename) as f:
         ncols = len(f.readline().split(","))
-    masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",",
-                                                   usecols=(range(1, ncols)))
+    masses, rx, ry, rz, vx, vy, vz = np.genfromtxt(filename, delimiter=",")
     masses, rx, ry, rz, vx, vy, vz = clean_data(num_to_strip, masses,
                                                 rx, ry, rz, vx, vy, vz)
     return masses, rx, ry, rz, vx, vy, vz
@@ -45,13 +44,13 @@ def get_single_data(filename):
 
 
 def save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz, dest, index=""):
-    np.savetxt(dest+"/masses{}.csv".format(index), masses, delimiter=",")
-    np.savetxt(dest+"/pos_x{}.csv".format(index), pos_x, delimiter=",")
-    np.savetxt(dest+"/pos_y{}.csv".format(index), pos_y, delimiter=",")
-    np.savetxt(dest+"/pos_z{}.csv".format(index), pos_z, delimiter=",")
-    np.savetxt(dest+"/vel_x{}.csv".format(index), vx, delimiter=",")
-    np.savetxt(dest+"/vel_y{}.csv".format(index), vy, delimiter=",")
-    np.savetxt(dest+"/vel_z{}.csv".format(index), vz, delimiter=",")
+    vel_x, vel_y, vel_z = vx, vy, vz
+    file_data = [masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z]
+    file_str = ["masses", "pos_x", "pos_y", "pos_z", "vel_x", "vel_y", "vel_z"]
+    for index, file in enumerate(file_data):
+        file_dir = dest + "/" + file_str[index] + ".csv"
+        with open(file_dir, "wb") as f:
+            np.savetxt(f, file, delimiter=",")
 
 
 def get_init_conds(filename):
@@ -156,9 +155,11 @@ def get_kinetic(v, m):
 
 
 def get_grav_potential(mass1, mass2, r1, r2):
+    r1.astype("int64")
+    r2.astype("int64")
     dist = np.subtract(r1, r2)
-    return -G*mass1*mass2 / get_mag(dist)
-
+    potential = -G*mass1*mass2 / get_mag(dist)
+    return potential
 
 def get_total_potential(N, masses, positions):
     potential = 0
@@ -170,6 +171,14 @@ def get_total_potential(N, masses, positions):
             else:
                 potential += 0
     return potential
+
+
+def get_com(position, mass):
+    com_x = np.average(position[0], axis=0, weights=mass)
+    com_y = np.average(position[1], axis=0, weights=mass)
+    com_z = np.average(position[2], axis=0, weights=mass)
+    com = np.array([com_x, com_y, com_z])
+    return com
 
 
 def get_group_vel(masses, velocities):
@@ -205,14 +214,6 @@ def gen_masses(N):
 
 def gen_xyz(N, spread):
     return np.random.normal(0, spread, (3, N))
-
-
-def get_com(position, mass):
-    com_x = np.average(position[0], axis=0, weights=mass)
-    com_y = np.average(position[1], axis=0, weights=mass)
-    com_z = np.average(position[2], axis=0, weights=mass)
-    com = np.array([com_x, com_y, com_z])
-    return com
 
 
 def adjust_pos(position, com):
@@ -296,6 +297,19 @@ def filament_progression(x, y, z):
     z_spread = random.randrange(int(-z/2), int(z/2), int(z/1000))
     result = np.array((x_spread, y_spread, z_spread), dtype="float64")
     return result
+
+
+def generate_full_filament(destination_directory,
+                                  init_conds_directory,
+                                  init_conds_name):
+        clean_results_files(destination_directory)
+        init_vars = get_init_conds(init_conds_directory + init_conds_name)
+        init_vars = [int(i) for i in init_vars]
+        progression = list((init_vars[-3], init_vars[-2], init_vars[-1]))
+        init_vars = init_vars[0:-3]
+        # Generating initial_data
+        cluster_list = gen_filament(*init_vars, *progression)
+        return cluster_list
 
 # =============================================================================
 # GRAPHING

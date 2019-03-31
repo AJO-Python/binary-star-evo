@@ -6,13 +6,22 @@ Created on Tue Mar 19 15:10:24 2019
 @author: josh
 """
 
+import os
 import numpy as np
 import orbit_functions as of
 import sys
 np.random.seed(123)
 
+"""
+TODO:
+    Error is overflow giving pair_energy = NaN
+    Check dtype of all array. Want int64
+    Maybe float64???????
 
-class body:
+"""
+
+
+class body_class:
     # Class count of how many bodies have been created
     # and what the unique ID counter and total system mass are
     num_bodies = 0
@@ -23,8 +32,8 @@ class body:
         self.mass = mass
         self.position = position
         self.velocity = velocity
-        self.ID = body.ID
         self.order = order
+        self.ID = body_class.ID # Assigning unique ID
         # Checking if the star is a single or multiple already
         if self.order == 1:
             self.base = str(self.ID)  # setting the base to the ID if single
@@ -32,9 +41,9 @@ class body:
             self.base = base # Setting base to the passed in argument
                              # of "base". This is the IDs of the base objects
         # Mainting the class counters
-        body.num_bodies += 1
-        body.ID += 1
-        body.total_mass += mass
+        body_class.num_bodies += 1
+        body_class.ID += 1
+        body_class.total_mass += mass
 
     def show_atts(self):
         # Used to print all attributes of a body
@@ -47,30 +56,51 @@ class body:
         print()
 
 
-def main_loop(run_name):  # e.g "results2.py"
-    body_list = create_body_objects("./results/" + run_name)
+class binary:
+    # Describes a system comprised of two bodies
 
+
+    def __init__(self, binary_ID): # Initialise with combined binary body
+        body1, body2 = binary_index[binary_ID]
+        print(body1, body2)
+        # Setting binary up as
+        self.ID = binary_ID
+        self.mass = body.mass
+        self.com = body.podition
+        self.velocity = body.velocity
+        self.ID = body.ID
+        self.order = body.order
+
+
+def detect_binaries(run_name):  # e.g "results2.py"
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    body_list = create_body_objects(dir_path + "/results/" + run_name)
     all_bodies = [body for body in body_list]
+
     binary_index = {}
-    inital_bodies = len(body_list)
     highest_order = 0
     counter = 0
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
+
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
+
         # Getting the most bound binary and the indexes of the bodies
         index1, index2, binary_body, body1_ID, body2_ID = get_binary(body_list)
+
         # Storing the data
-# ------> all_bodies.append(binary_body)
         binary_index[binary_body.ID] = str(body1_ID) + "-" + str(body2_ID)
+
         # Replacing the 2 most bound with a single binary object
         body_list.append(binary_body)
         all_bodies.append(binary_body)
+
         # Sorting and reversing the indexes to guarantee the indexes
         # do not change after the first del()
         for i in sorted([index1, index2], reverse=True):
             del body_list[i]
+
+        # Checking for highest order binary - Should == N
         if binary_body.order > highest_order:
             highest_order = binary_body.order
         counter += 1
@@ -80,8 +110,8 @@ def main_loop(run_name):  # e.g "results2.py"
 def get_binary(body_list):
     target1_ID, target2_ID, pot = get_most_bound(body_list)
     index1, index2, binary_body = get_index(target1_ID,
-                                                      target2_ID,
-                                                      body_list)
+                                            target2_ID,
+                                            body_list)
     return index1, index2, binary_body, target1_ID, target2_ID
 
 
@@ -101,12 +131,19 @@ def get_all_pot_energy(body_list):
             target_body = j
             pair_ref = sorted([main_body.ID, target_body.ID])
 
+            # Ensuring no 1-->2 and 2-->1 calculation
+            # No interaction with self either
             if (i == j) or (pair_ref in done_pairs):
                 pass
             else:
                 pair_energy = of.get_grav_potential(
                         main_body.mass, target_body.mass,
                         main_body.position, target_body.position)
+
+                # Checking if pair_energy has failed
+                if np.isnan(pair_energy):
+                    print(i.ID, j.ID)
+                    raise ValueError("pair_energy in get_all_pot_energy is nan")
 
                 pair_energy_dict["{}-{}".format(main_body.ID,
                                  target_body.ID)] = pair_energy
@@ -121,6 +158,9 @@ def get_largest_potential(dictionary):
     for ID, pot in dictionary.items():
         if pot == target_potential:
             target_ID = ID
+            break
+    if target_ID == None:
+        raise ValueError("Target bodies not found in: get_largest_potential")
     target1_ID, target2_ID = target_ID.split("-")
     target1_ID, target2_ID = int(target1_ID), int(target2_ID)
     return target1_ID, target2_ID, target_potential
@@ -150,31 +190,38 @@ def create_body_objects(directory):
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
     for index, mass in enumerate(masses):
-        temp_body = body(mass,
-                         [pos_x[index], pos_y[index], pos_z[index]],
-                         [vel_x[index], vel_y[index], vel_z[index]])
-        body_list_create.append(temp_body)
+        print(index)
+        if index > 21:  # ADDED
+            break
+        else:
+            pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
+            vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
+            temp_body = body_class(mass, pos, vel)
+            body_list_create.append(temp_body)
 
     return body_list_create
 
+
 def combine(body1, body2):
     mass, pos, vel, order_binary = merge(body1, body2)
-    body.total_mass -= mass
-    body.num_bodies -= 2
+    body_class.total_mass -= mass
+    body_class.num_bodies -= 2
     base_components = str(body1.base) + str(body2.base)
-    return body(mass, pos, vel, order=order_binary, base=base_components)
+    return body_class(mass, pos, vel, order=order_binary, base=base_components)
+
 
 def merge(body1, body2):
-    mass = body1.mass + body2.mass
+    m1 = body1.mass
+    m2 = body2.mass
+    mass = m1 + m2
     order_binary = body1.order + body2.order
-    pos = [(body1.position[0]+body2.position[0])/2,
-            (body1.position[1]+body2.position[1])/2,
-            (body1.position[2]+body2.position[2])/2]
-    vel = [(body1.velocity[0]+body2.velocity[0])/2,
-            (body1.velocity[1]+body2.velocity[1])/2,
-            (body1.velocity[2]+body2.velocity[2])/2]
+    pos = [(body1.position[0]*m1+body2.position[0]*m2)/2*mass,
+           (body1.position[1]*m1+body2.position[1]*m2)/2*mass,
+           (body1.position[2]*m1+body2.position[2]*m2)/2*mass]
+    vel = [(body1.velocity[0]*m1+body2.velocity[0]*m2)/2*mass,
+           (body1.velocity[1]*m1+body2.velocity[1]*m2)/2*mass,
+           (body1.velocity[2]*m1+body2.velocity[2]*m2)/2*mass]
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = main_loop("run4")
-
+body_list, binary_index = detect_binaries("calibrated_long_run")
