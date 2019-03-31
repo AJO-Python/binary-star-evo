@@ -64,23 +64,21 @@ class binary:
         self.order = body.order
 
 
-
 def detect_binaries(run_name):  # e.g "results2.py"
     dir_path = os.path.dirname(os.path.realpath(__file__))
     body_list = create_body_objects(dir_path + "/results/" + run_name)
-
     all_bodies = [body for body in body_list]
     binary_index = {}
     inital_bodies = len(body_list)
     highest_order = 0
     counter = 0
+    print("Made it to \"while\" loop")
 
     while len(body_list) > 1:  # Recalculating after every binary is found
         binary_body = None  # Clearing the variable
         # Getting the most bound binary and the indexes of the bodies
         index1, index2, binary_body, body1_ID, body2_ID = get_binary(body_list)
         # Storing the data
-# ------> all_bodies.append(binary_body)
         binary_index[binary_body.ID] = str(body1_ID) + "-" + str(body2_ID)
         # Replacing the 2 most bound with a single binary object
         body_list.append(binary_body)
@@ -89,6 +87,7 @@ def detect_binaries(run_name):  # e.g "results2.py"
         # do not change after the first del()
         for i in sorted([index1, index2], reverse=True):
             del body_list[i]
+        # Checking for highest order binary - Should == N
         if binary_body.order > highest_order:
             highest_order = binary_body.order
         counter += 1
@@ -98,8 +97,8 @@ def detect_binaries(run_name):  # e.g "results2.py"
 def get_binary(body_list):
     target1_ID, target2_ID, pot = get_most_bound(body_list)
     index1, index2, binary_body = get_index(target1_ID,
-                                                      target2_ID,
-                                                      body_list)
+                                            target2_ID,
+                                            body_list)
     return index1, index2, binary_body, target1_ID, target2_ID
 
 
@@ -165,10 +164,10 @@ def create_body_objects(directory):
     vel_x = of.get_single_data(directory + "/vel_x.csv")
     vel_y = of.get_single_data(directory + "/vel_y.csv")
     vel_z = of.get_single_data(directory + "/vel_z.csv")
-    # Generating and storing all body objects in an array for easy access
-    body_list_create = []
     print(len(masses))
     print(len(pos_x))
+    # Generating and storing all body objects in an array for easy access
+    body_list_create = []
     for index, mass in enumerate(masses):
         temp_body = body_class(mass,
                          [pos_x[index], pos_y[index], pos_z[index]],
@@ -200,6 +199,4 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("run7")
-
-test = binary(46)
+body_list, binary_index = detect_binaries("run3")

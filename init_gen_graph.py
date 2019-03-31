@@ -43,7 +43,7 @@ p1 = Axes3D(fig)
 #p1.set_ylim3d(of.min_max(y))
 #p1.set_zlim3d(of.min_max(z))
 
-x_dist = 5e16
+x_dist = 3e16
 
 p1.set_xlim3d(0, x_dist)
 p1.set_ylim3d(-x_dist/2, x_dist/2)
