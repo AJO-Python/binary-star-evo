@@ -3,12 +3,15 @@ import Integrator
 
 #  simulate(destination_directory, continue,
 #	save_suffix=, init_conds_name=, init_conds_directory=)
-init_file="/init_conds.txt"
-direc = "/home/ug/c1672922/results/run1"
-#direc = "/home/josh/binary-star-evo/results/test"
-#init_dir = "/home/josh/binary-star-evo/results/test"
+init_file="init_conds.txt"
+#direc = "/home/ug/c1672922/results/run1"
+direc = "/home/josh/binary-star-evo/results/test"
+init_dir = "/home/josh/binary-star-evo/results/test"
 
-Integrator.simulate(direc, False, init_conds_name=init_file, report_pos=100)
+Integrator.simulate(direc,
+                    CONT_PREVIOUS=False,
+                    init_conds_name=init_file,
+                    report_pos=100)
 
 #Integrator.simulate(
 #        destination_directory, ----> Directory to save results in

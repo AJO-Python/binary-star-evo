@@ -155,11 +155,11 @@ def get_kinetic(v, m):
 
 
 def get_grav_potential(mass1, mass2, r1, r2):
-    r1.astype("int64")
-    r2.astype("int64")
     dist = np.subtract(r1, r2)
+    dist.astype("float64")
     potential = -G*mass1*mass2 / get_mag(dist)
     return potential
+
 
 def get_total_potential(N, masses, positions):
     potential = 0

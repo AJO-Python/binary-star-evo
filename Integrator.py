@@ -22,7 +22,7 @@ au = 1.49597e11
 def simulate(destination_directory, CONT_PREVIOUS=False,
              save_suffix="",
              init_conds_name="/init_conds.txt",
-             init_conds_directory="/home/ug/c1672922/binary-star-evo",
+             init_conds_directory="",
              source_directory="",
              report_pos=100):
 
@@ -130,4 +130,4 @@ def simulate(destination_directory, CONT_PREVIOUS=False,
         t += dt
         count += 1
 
-simulate("/home/josh/binary-star-evo/results/test", init_conds_directory="/home/josh/binary-star-evo", report_pos=10)
+#simulate("/home/josh/binary-star-evo/results/test", init_conds_directory="/home/josh/binary-star-evo", report_pos=10)

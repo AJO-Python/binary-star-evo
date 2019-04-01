@@ -56,11 +56,11 @@ p1 = Axes3D(fig)
 
 
 
-x_dist = 5e16
-
-p1.set_xlim3d(0, x_dist)
-p1.set_ylim3d(-x_dist/2, x_dist/2)
-p1.set_zlim3d(-x_dist/2, x_dist/2)
+#x_dist = 5e16
+#
+#p1.set_xlim3d(0, x_dist)
+#p1.set_ylim3d(-x_dist/2, x_dist/2)
+#p1.set_zlim3d(-x_dist/2, x_dist/2)
 
 
 for j in range(N_cluster):  # looping through cluster index
