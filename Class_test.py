@@ -33,13 +33,14 @@ class body_class:
         self.position = position
         self.velocity = velocity
         self.order = order
-        self.ID = body_class.ID # Assigning unique ID
+        self.ID = body_class.ID  # Assigning unique ID
         # Checking if the star is a single or multiple already
         if self.order == 1:
             self.base = str(self.ID)  # setting the base to the ID if single
         else:
-            self.base = base # Setting base to the passed in argument
-                             # of "base". This is the IDs of the base objects
+            self.base = base
+            # Setting base to the passed in argument
+            # of "base". This is the IDs of the base objects
         # Mainting the class counters
         body_class.num_bodies += 1
         body_class.ID += 1
@@ -64,6 +65,7 @@ class binary:
         body1, body2 = binary_index[binary_ID]
         print(body1, body2)
         # Setting binary up as
+
         self.ID = binary_ID
         self.mass = body.mass
         self.com = body.podition
@@ -140,11 +142,6 @@ def get_all_pot_energy(body_list):
                         main_body.mass, target_body.mass,
                         main_body.position, target_body.position)
 
-                # Checking if pair_energy has failed
-                if np.isnan(pair_energy):
-                    print(i.ID, j.ID)
-                    raise ValueError("pair_energy in get_all_pot_energy is nan")
-
                 pair_energy_dict["{}-{}".format(main_body.ID,
                                  target_body.ID)] = pair_energy
                 done_pairs.append(pair_ref)
@@ -159,7 +156,7 @@ def get_largest_potential(dictionary):
         if pot == target_potential:
             target_ID = ID
             break
-    if target_ID == None:
+    if target_ID is None:
         raise ValueError("Target bodies not found in: get_largest_potential")
     target1_ID, target2_ID = target_ID.split("-")
     target1_ID, target2_ID = int(target1_ID), int(target2_ID)
@@ -190,14 +187,10 @@ def create_body_objects(directory):
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
     for index, mass in enumerate(masses):
-        print(index)
-        if index > 21:  # ADDED
-            break
-        else:
-            pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
-            vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
-            temp_body = body_class(mass, pos, vel)
-            body_list_create.append(temp_body)
+        pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
+        vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
+        temp_body = body_class(mass, pos, vel)
+        body_list_create.append(temp_body)
 
     return body_list_create
 
@@ -224,4 +217,4 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("calibrated_long_run")
+body_list, binary_index = detect_binaries("test")

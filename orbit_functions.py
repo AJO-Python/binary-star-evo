@@ -68,6 +68,7 @@ def clean_results_files(direc):
                   "/sim_time.csv", "/run_time.csv",
                   "/pos_x.csv", "/pos_y.csv", "/pos_z.csv",
                   "/vel_x.csv", "/vel_y.csv", "/vel_z.csv"]
+    # Ensuring the files all exist and are empty
     for i in file_names:
         with open(direc + i, "w"):
             pass
@@ -145,6 +146,7 @@ def get_momentum(v, m):
 
 
 def get_mag(vector):
+    vector = np.array(vector, dtype="float64")
     # Gets magnitude of 3D vector
     return np.sqrt((vector[0]**2 + vector[1]**2 + vector[2]**2))
 
@@ -156,8 +158,11 @@ def get_kinetic(v, m):
 
 def get_grav_potential(mass1, mass2, r1, r2):
     dist = np.subtract(r1, r2)
-    dist.astype("float64")
+    dist = np.array(dist, dtype=object)
     potential = -G*mass1*mass2 / get_mag(dist)
+    if np.isnan(potential):
+        print(type(mass1))
+        raise ValueError("pair_energy in get_all_pot_energy = nan")
     return potential
 
 
