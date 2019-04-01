@@ -59,20 +59,24 @@ class body_class:
 
 class binary:
     # Describes a system comprised of two bodies
-
+    num_binaries = 0
 
     def __init__(self, binary_ID): # Initialise with combined binary body
-        body1, body2 = binary_index[binary_ID]
-        print(body1, body2)
-        # Setting binary up as
+        global binary_index
+        global body_list
+        ID_str = binary_index[binary_ID]
+        body1_ID, body2_ID = ID_str.split("-")
+        body1, body2 = body_list[int(body1_ID)], body_list[int(body2_ID)]
+        # Setting binary paramters
+        self.ID = num_binaries
+        self.mass, self.com, self.vel, self.order = merge(body1, body2)
+        # Effective mass
+        self.emass = get_eff_mass(body1.mass, body2.mass)
 
-        self.ID = binary_ID
-        self.mass = body.mass
-        self.com = body.podition
-        self.velocity = body.velocity
-        self.ID = body.ID
-        self.order = body.order
+def get_eff_mass(m1, m2):
+    return (m1+m2)/(m1*m2)
 
+a = binary(30)
 
 def detect_binaries(run_name):  # e.g "results2.py"
     dir_path = os.path.dirname(os.path.realpath(__file__))
