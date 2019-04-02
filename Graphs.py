@@ -15,26 +15,22 @@ import random
 random.seed(124)
 
 """
-Integrator.simulate("/home/josh/binary-star-evo/results/run5",
+Integrator.simulate("./results/run5",
                     False,
-                    init_conds_directory="/home/josh/binary-star-evo/results/run5",
+                    init_conds_directory="./results/run5",
                     report_pos=1)
 """
 # %%
 
 run_name = "/test"
-run_dir = "/home/josh/binary-star-evo/results"
+run_dir = "./results"
 direc = run_dir + run_name
 
-"""
-run_name = ""
-run_dir = "/home/josh/Documents/Binary_analysis"
-"""
 
 # %%
-x = of.get_single_data(run_dir + run_name + "/pos_x.csv")
-y = of.get_single_data(run_dir + run_name + "/pos_y.csv")
-z = of.get_single_data(run_dir + run_name + "/pos_z.csv")
+x = of.get_single_data(direc + "/pos_x.csv")
+y = of.get_single_data(direc + "/pos_y.csv")
+z = of.get_single_data(direc + "/pos_z.csv")
 x, y, z = of.strip_trailing_data(x, y, z)
 
 

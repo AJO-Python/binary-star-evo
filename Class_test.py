@@ -12,11 +12,13 @@ import orbit_functions as of
 import sys
 np.random.seed(123)
 
+G = 6.674e-11
+au = 1.49597e11
+pc = 3.0857e16
+
 """
 TODO:
-    Error is overflow giving pair_energy = NaN
-    Check dtype of all array. Want int64
-    Maybe float64???????
+
 
 """
 
@@ -64,19 +66,34 @@ class binary:
     def __init__(self, binary_ID): # Initialise with combined binary body
         global binary_index
         global body_list
-        ID_str = binary_index[binary_ID]
-        body1_ID, body2_ID = ID_str.split("-")
+        ID_str, potential = binary_index[binary_ID]
+        body1_ID, body2_ID = ID_str[0].split("-")
         body1, body2 = body_list[int(body1_ID)], body_list[int(body2_ID)]
+        # Setting primary and secondary bodies by mass
+        self.primary = body1 if body1.mass >= body2.mass else body2
+        self.secondary = body1 if self.primary != body1 else body2
         # Setting binary paramters
-        self.ID = num_binaries
+        self.ID = binary.num_binaries
         self.mass, self.com, self.vel, self.order = merge(body1, body2)
         # Effective mass
         self.emass = get_eff_mass(body1.mass, body2.mass)
+        self.EK = get_binary_kinetic(body1, body2)
+        self.EP = potential
+        # Getting the semi-major axis (sma)
+        self.sma = -(G*self.mass) / (2*(self.EK + self.EP))
+
+
+def get_binary_kinetic(body1, body2):
+    v1 = of.get_mag(body1.velocity)
+    v2 = of.get_mag(body2.velocity)
+    EK_1 = of.get_kinetic(v1, body1.mass)
+    EK_2 = of.get_kinetic(v2, body2.mass)
+    return EK_1 + EK_2
+
 
 def get_eff_mass(m1, m2):
     return (m1+m2)/(m1*m2)
 
-a = binary(30)
 
 def detect_binaries(run_name):  # e.g "results2.py"
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -84,6 +101,7 @@ def detect_binaries(run_name):  # e.g "results2.py"
     body_list = create_body_objects(dir_path + "/results/" + run_name)
     all_bodies = [body for body in body_list]
 
+    global binary_index
     binary_index = {}
     highest_order = 0
     counter = 0
@@ -92,10 +110,11 @@ def detect_binaries(run_name):  # e.g "results2.py"
         binary_body = None  # Clearing the variable
 
         # Getting the most bound binary and the indexes of the bodies
-        index1, index2, binary_body, body1_ID, body2_ID = get_binary(body_list)
+        index1, index2, binary_body, body1_ID, body2_ID, potential = get_binary(body_list)
 
         # Storing the data
-        binary_index[binary_body.ID] = str(body1_ID) + "-" + str(body2_ID)
+        binary_index[binary_body.ID] = [[str(body1_ID) + "-" + str(body2_ID)],
+                                        potential]
 
         # Replacing the 2 most bound with a single binary object
         body_list.append(binary_body)
@@ -118,7 +137,7 @@ def get_binary(body_list):
     index1, index2, binary_body = get_index(target1_ID,
                                             target2_ID,
                                             body_list)
-    return index1, index2, binary_body, target1_ID, target2_ID
+    return index1, index2, binary_body, target1_ID, target2_ID, pot
 
 
 def get_most_bound(body_list):
@@ -222,3 +241,4 @@ def merge(body1, body2):
 
 
 body_list, binary_index = detect_binaries("test")
+a = binary(30)
