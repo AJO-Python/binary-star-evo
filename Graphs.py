@@ -52,11 +52,13 @@ p1 = Axes3D(fig)
 
 
 
-#x_dist = 5e16
-#
-#p1.set_xlim3d(0, x_dist)
-#p1.set_ylim3d(-x_dist/2, x_dist/2)
-#p1.set_zlim3d(-x_dist/2, x_dist/2)
+x_dist = 0.5e16
+
+p1.set_xlim3d(-x_dist/2, x_dist/2)
+p1.set_ylim3d(-x_dist/2, x_dist/2)
+p1.set_zlim3d(-x_dist/2, x_dist/2)
+
+
 
 
 for j in range(N_cluster):  # looping through cluster index
@@ -64,10 +66,10 @@ for j in range(N_cluster):  # looping through cluster index
     #for i in [33, 34, 35, 36]:
     for i in range(len(x[0])):  # looping through bodies index
         if (i >= N*j and i < N*(j+1)) or (j==0 and i==0):
-            p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
+            p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col, linewidth=0.5)
             #p1.scatter(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col)
             p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
-            p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
+            p1.scatter(x[0, i], y[0, i], z[0, i], color="red", marker="x")
         else:
             pass
 
