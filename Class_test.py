@@ -9,8 +9,8 @@ Created on Tue Mar 19 15:10:24 2019
 import os
 import numpy as np
 import orbit_functions as of
-import sys
-np.random.seed(123)
+import Graphs as gr
+np.random.seed(124)
 
 G = 6.674e-11
 au = 1.49597e11
@@ -63,7 +63,7 @@ class binary:
     # Describes a system comprised of two bodies
     num_binaries = 0
 
-    def __init__(self, binary_ID): # Initialise with combined binary body
+    def __init__(self, binary_ID):  # Initialise with combined binary body ID
         global binary_index
         global body_list
         ID_str, potential = binary_index[binary_ID]
@@ -80,7 +80,10 @@ class binary:
         self.EK = get_binary_kinetic(body1, body2)
         self.EP = potential
         # Getting the semi-major axis (sma)
-        self.sma = -(G*self.mass) / (2*(self.EK + self.EP))
+        self.sma = -(G*body1.mass*body2.mass) / (2*(self.EK + self.EP))
+        self.mr = self.primary.mass / self.secondary.mass
+        self.base = [self.primary.ID, self.secondary.ID]
+        #self.period = get_binary_period()
 
 
 def get_binary_kinetic(body1, body2):
@@ -91,8 +94,11 @@ def get_binary_kinetic(body1, body2):
     return EK_1 + EK_2
 
 
+#def get_binary_period():
+
+
 def get_eff_mass(m1, m2):
-    return (m1+m2)/(m1*m2)
+    return (m1*m2)/(m1+m2)
 
 
 def detect_binaries(run_name):  # e.g "results2.py"
@@ -111,6 +117,8 @@ def detect_binaries(run_name):  # e.g "results2.py"
 
         # Getting the most bound binary and the indexes of the bodies
         index1, index2, binary_body, body1_ID, body2_ID, potential = get_binary(body_list)
+        if index1 is None:
+            break
 
         # Storing the data
         binary_index[binary_body.ID] = [[str(body1_ID) + "-" + str(body2_ID)],
@@ -134,6 +142,8 @@ def detect_binaries(run_name):  # e.g "results2.py"
 
 def get_binary(body_list):
     target1_ID, target2_ID, pot = get_most_bound(body_list)
+    if pot is None:
+        return [None]*6
     index1, index2, binary_body = get_index(target1_ID,
                                             target2_ID,
                                             body_list)
@@ -142,6 +152,8 @@ def get_binary(body_list):
 
 def get_most_bound(body_list):
         EP_dict = get_all_pot_energy(body_list)
+        if EP_dict == {}:
+            return None, None, None
         target1_ID, target2_ID, potential = get_largest_potential(EP_dict)
         return target1_ID, target2_ID, potential
 
@@ -164,10 +176,10 @@ def get_all_pot_energy(body_list):
                 pair_energy = of.get_grav_potential(
                         main_body.mass, target_body.mass,
                         main_body.position, target_body.position)
-
-                pair_energy_dict["{}-{}".format(main_body.ID,
-                                 target_body.ID)] = pair_energy
-                done_pairs.append(pair_ref)
+                if pair_energy < -1e28:
+                    pair_energy_dict["{}-{}".format(main_body.ID,
+                                     target_body.ID)] = pair_energy
+            done_pairs.append(pair_ref)
     return pair_energy_dict
 
 
@@ -231,14 +243,26 @@ def merge(body1, body2):
     m2 = body2.mass
     mass = m1 + m2
     order_binary = body1.order + body2.order
-    pos = [(body1.position[0]*m1+body2.position[0]*m2)/2*mass,
-           (body1.position[1]*m1+body2.position[1]*m2)/2*mass,
-           (body1.position[2]*m1+body2.position[2]*m2)/2*mass]
-    vel = [(body1.velocity[0]*m1+body2.velocity[0]*m2)/2*mass,
-           (body1.velocity[1]*m1+body2.velocity[1]*m2)/2*mass,
-           (body1.velocity[2]*m1+body2.velocity[2]*m2)/2*mass]
+    pos = [(body1.position[0]*m1+body2.position[0]*m2)/mass,
+           (body1.position[1]*m1+body2.position[1]*m2)/mass,
+           (body1.position[2]*m1+body2.position[2]*m2)/mass]
+    vel = [(body1.velocity[0]*m1+body2.velocity[0]*m2)/mass,
+           (body1.velocity[1]*m1+body2.velocity[1]*m2)/mass,
+           (body1.velocity[2]*m1+body2.velocity[2]*m2)/mass]
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("test")
-a = binary(30)
+body_list, binary_index = detect_binaries("present_data")
+
+binary_list = []
+for ID in binary_index.keys():
+    binary_list.append(binary(ID))
+# %%
+
+gr.plot_graph("present_data",
+          display="True",
+          x_dist=2e16,
+          plot_pos=1,
+          binary_to_plot=[binary_list[0].base[0],
+                          binary_list[0].base[1], 17, 13])
+
