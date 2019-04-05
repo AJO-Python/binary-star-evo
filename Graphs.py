@@ -18,7 +18,12 @@ import random
 
 
 
-def plot_graph(run_name, binary_to_plot=[], plot_pos=1, display="", x_dist=1e16):
+def plot_graph(run_name,
+               binary_to_plot=[],
+               plot_pos=1,
+               display="",
+               x_dist=1e16,
+               start=0):
     run_dir = "./results/"
     direc = run_dir + run_name
     x = of.get_single_data(direc + "/pos_x.csv")
@@ -46,27 +51,19 @@ def plot_graph(run_name, binary_to_plot=[], plot_pos=1, display="", x_dist=1e16)
 
     for j in range(N_cluster):  # looping through cluster index
         col = random.choice(colors_list)
-        for i, col in zip([4, 10, 13, 17], ["blue", "red", "red", "black"]):
-        #for i in range(len(x[0])):  # looping through bodies index
+        #col="blue"
+        #for i, col in zip([4, 10, 13, 17], ["blue", "red", "red", "black"]):
+        for i in range(len(x[0])):  # looping through bodies index
             if (i >= N*j and i < N*(j+1)) or (j==0 and i==0):
-#                if i in binary_to_plot:
-#                    if i == binary_to_plot[-1]:
-#                        p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color="blue", linewidth=0.6)
-#                        p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="blue", marker=">")
-#                        p1.scatter(x[0, i], y[0, i], z[0, i], color="blue", marker="o")
-#                    elif i == binary_to_plot[-2]:
-#                        p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color="green", linewidth=0.6)
-#                        p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="green", marker=">")
-#                        p1.scatter(x[0, i], y[0, i], z[0, i], color="green", marker="o")
-#                    else:
-#                        p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color="red", linewidth=0.6)
-#                        p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="red", marker=">")
-#                        p1.scatter(x[0, i], y[0, i], z[0, i], color="red", marker="o")
-                if 1 == 0: pass
+                print(len(x[0]))
+                if i in binary_to_plot:
+                    p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color="red", linewidth=0.8)
+                    p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="red", marker=">")
+                    p1.scatter(x[0, i], y[0, i], z[0, i], color="red", marker="o")
                 else:
-                    p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color=col, linewidth=0.6)
-                    p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
-                    p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
+                    #p1.plot(x[start::plot_pos, i], y[start::plot_pos, i], z[start::plot_pos, i], color=col, linewidth=0.6)
+                    #p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
+                    #p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
                     pass
             else:
                 pass

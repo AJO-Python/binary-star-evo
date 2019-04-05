@@ -8,6 +8,7 @@ Created on Tue Mar 19 15:10:24 2019
 
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 import orbit_functions as of
 import Graphs as gr
 np.random.seed(124)
@@ -254,15 +255,25 @@ def merge(body1, body2):
 
 body_list, binary_index = detect_binaries("present_data")
 
+# %%
+# Generating all binary objects
 binary_list = []
 for ID in binary_index.keys():
     binary_list.append(binary(ID))
+count=0
+plt.figure(1)
+for obj in binary_list:
+    if obj.order <= 2:
+        plt.scatter(abs(obj.sma), obj.mr, color="black")
+plt.xlabel("sma")
+plt.ylabel("Mass ratio")
+plt.grid()
+plt.show()
 # %%
 
 gr.plot_graph("present_data",
           display="True",
           x_dist=2e16,
           plot_pos=1,
-          binary_to_plot=[binary_list[0].base[0],
-                          binary_list[0].base[1], 17, 13])
-
+          binary_to_plot=[23, 27],
+          start=0)
