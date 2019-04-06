@@ -65,7 +65,7 @@ class binary:
     num_binaries = 0
 
     def __init__(self, binary_ID):  # Initialise with combined binary body ID
-        global binary_index
+        global binary_index  # Pass in the global body arrrays
         global body_list
         ID_str, potential = binary_index[binary_ID]
         body1_ID, body2_ID = ID_str[0].split("-")
@@ -75,13 +75,14 @@ class binary:
         self.secondary = body1 if self.primary != body1 else body2
         # Setting binary paramters
         self.ID = binary.num_binaries
-        self.mass, self.com, self.vel, self.order = merge(body1, body2)
-        # Effective mass
+        #self.mass, self.com, self.vel, self.order = merge(body1, body2)
+        # Effective mass for force calculations
         self.emass = get_eff_mass(body1.mass, body2.mass)
         self.EK = get_binary_kinetic(body1, body2)
         self.EP = potential
-        # Getting the semi-major axis (sma)
+        # Semi-major axis (sma)
         self.sma = -(G*body1.mass*body2.mass) / (2*(self.EK + self.EP))
+        # Mass ratio
         self.mr = self.primary.mass / self.secondary.mass
         self.base = [self.primary.ID, self.secondary.ID]
         #self.period = get_binary_period()
@@ -96,16 +97,13 @@ def get_binary_kinetic(body1, body2):
 
 
 #def get_binary_period():
-
-
-def get_eff_mass(m1, m2):
+#def get_eff_mass(m1, m2):
     return (m1*m2)/(m1+m2)
 
 
 def detect_binaries(run_name):  # e.g "results2.py"
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    body_list = create_body_objects(dir_path + "/results/" + run_name)
+    body_list = create_body_objects("./results/" + run_name)
+    
     all_bodies = [body for body in body_list]
 
     global binary_index
