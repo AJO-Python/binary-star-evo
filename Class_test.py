@@ -106,8 +106,8 @@ def detect_binaries(run_name):  # e.g "results2.py"
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
     body_list = create_body_objects(dir_path + "/results/" + run_name)
-    all_bodies = [body for body in body_list]
-
+    #all_bodies = [body for body in body_list]
+    all_bodies = body_list
     global binary_index
     binary_index = {}
     highest_order = 0

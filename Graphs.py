@@ -55,7 +55,6 @@ def plot_graph(run_name,
         #for i, col in zip([4, 10, 13, 17], ["blue", "red", "red", "black"]):
         for i in range(len(x[0])):  # looping through bodies index
             if (i >= N*j and i < N*(j+1)) or (j==0 and i==0):
-                print(len(x[0]))
                 if i in binary_to_plot:
                     p1.plot(x[::plot_pos, i], y[::plot_pos, i], z[::plot_pos, i], color="red", linewidth=0.8)
                     p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="red", marker=">")
@@ -72,3 +71,4 @@ def plot_graph(run_name,
     p1.set_zlabel("Z (m)", linespacing=3.1)
     fig.show()
     # fig = plt.savefig("positions.pdf")
+plot_graph("present_data")
