@@ -25,16 +25,14 @@ def simulate(destination_directory,
              init_conds_directory="",
              source_directory="",
              report_pos=100):
-  """
-  destination_directory = directory to save results to
-  CONT_PREVIOUS = Continue from previous run (must be stored in destination_directory
-  save_suffix = Use to save multiple runs in the same direcory (outdated - leave blank)
-  init_conds_name = select the initial conditions file
-  source_directory = location of files for continuing previous run - leave blank if same as destination_directory
-  report_pos = Number of time steps between updating the save file
-  
-  """
-
+    """
+    destination_directory = directory to save results to
+    CONT_PREVIOUS = Continue from previous run (must be stored in destination_directory
+    save_suffix = Use to save multiple runs in the same direcory (outdated - leave blank)
+    init_conds_name = select the initial conditions file
+    source_directory = location of files for continuing previous run - leave blank if same as destination_directory
+    report_pos = Number of time steps between updating the save file
+    """
     # Saving "init_conds.txt" to results directory
     source_cp = "cp " + init_conds_directory + init_conds_name
     os.popen(source_cp + " " + destination_directory + init_conds_name)
@@ -69,15 +67,16 @@ def simulate(destination_directory,
     # =============================================================================
     # %%
     # Initialising variables/arrays
-    dt = 10  # Time step 
+    dt = 10  # Time step
     t = 0
     count = 0
+    eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
-    momentum, kinetic, potential, energy = [] for _ in range(4)
-    pos_x, pos_y, pos_z = [ [], [], [] ] for _ in range(N)
-    r_array, dt_array, percent, time_count, time_to_run, sim_time = [] for _ in range(6)
+    momentum, kinetic, potential, energy = [[] for _ in range(4)]
+    pos_x, pos_y, pos_z = [[ [], [], [] ] for _ in range(N)]
+    r_array, dt_array, percent, time_count, time_to_run, sim_time = [[] for _ in range(6)]
     ax, ay, az, r_min = of.get_accel_soft(N, rx, ry, rz, masses, r_min, eps)
-    
+
     # Starting main loop and timer
     start = time.time()
     while count >= 0:  # Loop until close program\

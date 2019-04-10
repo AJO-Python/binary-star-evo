@@ -60,9 +60,9 @@ def plot_graph(run_name,
                     p1.scatter(x[-1, i], y[-1, i], z[-1, i], color="red", marker=">")
                     p1.scatter(x[0, i], y[0, i], z[0, i], color="red", marker="o")
                 else:
-                    #p1.plot(x[start::plot_pos, i], y[start::plot_pos, i], z[start::plot_pos, i], color=col, linewidth=0.6)
-                    #p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
-                    #p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker="x")
+                    p1.plot(x[start::plot_pos, i], y[start::plot_pos, i], z[start::plot_pos, i], color=col, linewidth=0.6)
+                    p1.scatter(x[-1, i], y[-1, i], z[-1, i], color=col, marker=">")
+                    p1.scatter(x[0, i], y[0, i], z[0, i], color=col, marker=".")
                     pass
             else:
                 pass
@@ -71,4 +71,6 @@ def plot_graph(run_name,
     p1.set_zlabel("Z (m)", linespacing=3.1)
     fig.show()
     # fig = plt.savefig("positions.pdf")
-plot_graph("present_data")
+plot_graph("present_data", binary_to_plot=[1, 2],
+           display="True",
+           x_dist=2e16)
