@@ -5,13 +5,13 @@ import Integrator
 #	save_suffix=, init_conds_name=, init_conds_directory=)
 init_file="init_conds.txt"
 #direc = "/home/ug/c1672922/results/run1"
-direc = "./results/test"
-init_dir = "./results/test"
+direc = "./results/run3"
+#init_dir = "./results/test"
 
 Integrator.simulate(direc,
                     CONT_PREVIOUS=False,
                     init_conds_name=init_file,
-                    report_pos=100)
+                    report_pos=10)
 
 #Integrator.simulate(
 #        destination_directory, ----> Directory to save results in
