@@ -213,7 +213,7 @@ def get_completion(time, time_max, done):
 
 def gen_masses(N):
     mass_sun = 1.989e30
-    masses = np.random.normal(0.5*mass_sun, 0.02*mass_sun, N)
+    masses = np.random.normal(0.2*mass_sun, 0.1*mass_sun, N)
     return masses
 
 

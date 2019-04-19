@@ -1,5 +1,5 @@
-N_cluster=1
-N=5
+N_cluster=3
+N=4
 mass_distribution=10
 body_position_distribution=2000
 seed=124

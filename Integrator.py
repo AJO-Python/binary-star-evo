@@ -69,11 +69,12 @@ def simulate(destination_directory,
     # Initialising variables/arrays
     dt = 10  # Time step
     t = 0
+    Tmax=1e10
     count = 0
     eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
     momentum, kinetic, potential, energy = [[] for _ in range(4)]
-    pos_x, pos_y, pos_z = [[ [], [], [] ] for _ in range(N)]
+    pos_x, pos_y, pos_z = ([[] for _ in range(N)] for i in range(3))
     r_array, dt_array, percent, time_count, time_to_run, sim_time = [[] for _ in range(6)]
     ax, ay, az, r_min = of.get_accel_soft(N, rx, ry, rz, masses, r_min, eps)
 
@@ -92,8 +93,8 @@ def simulate(destination_directory,
         ax, ay, az, r_temp = of.get_accel_soft(
                 N, rx, ry, rz, masses, r_min, eps)
         # Scaling the softening paramter
-        eps_temp = of.get_mag(r_temp)
-        eps = eps_temp if eps_temp > 1e9 else 1e9
+        #eps_temp = of.get_mag(r_temp)
+        #eps = eps_temp if eps_temp > 1e9 else 1e9
         # Calculating v(t + dt)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt
