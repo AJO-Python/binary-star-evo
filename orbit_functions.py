@@ -75,7 +75,8 @@ def clean_results_files(direc):
 
 
 def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
-                    N, pos_x, pos_y, pos_z, eps):
+                    N, pos_x, pos_y, pos_z,
+                    vel_x, vel_y, vel_z, eps):
     # Setting arrays
     momentum_body, kinetic_body, potential_body = [
             [] for _ in range(3)]
@@ -88,6 +89,9 @@ def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
         pos_x[i].append(rx[i])
         pos_y[i].append(ry[i])
         pos_z[i].append(rz[i])
+        vel_x[i].append(vx[i])
+        vel_y[i].append(vy[i])
+        vel_z[i].append(vz[i])
 
         for j in range(N):
             if i == j:
@@ -100,8 +104,8 @@ def report_snapshot(time, Tmax, masses, vx, vy, vz, rx, ry, rz,
                 potential_body.append(potential)
 
     Ek, Ep, Mom = (
-            sum(kinetic_body), sum(potential_body)*0.5, sum(momentum_body))
-    return pos_x, pos_y, pos_z, Ek, Ep, Mom
+            sum(kinetic_body), sum(potential_body), sum(momentum_body))
+    return pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, Ek, Ep, Mom
 
 # =============================================================================
 # INTEGRATOR

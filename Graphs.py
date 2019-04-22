@@ -4,7 +4,6 @@ Created on Thu Feb  7 14:34:19 2019
 
 @author: c1672922
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -13,8 +12,7 @@ import Integrator
 import matplotlib.colors as colors
 import random
 #random.seed(124)
-import matplotlib
-matplotlib.use("TkAgg")
+
 # %%
 
 
@@ -73,7 +71,7 @@ def plot_graph(run_name,
                     p1.plot(x[start::plot_pos, i],
                             y[start::plot_pos, i],
                             z[start::plot_pos, i],
-                            color=col, linewidth=0.6)
+                            color=col, linewidth=0.6, alpha=0.2)
                     p1.scatter(x[-1, i],
                                y[-1, i],
                                z[-1, i],
@@ -90,6 +88,9 @@ def plot_graph(run_name,
     p1.set_zlabel("Z (m)", linespacing=3.1)
     fig.show()
     # fig = plt.savefig("positions.pdf")
+"""
 plot_graph("3x4_standard_long", binary_to_plot=[1, 2],
            display="All",
-           x_dist=2e16)
+           x_dist=2e16,
+           plot_pos=1)
+"""

@@ -98,7 +98,7 @@ def get_binary_kinetic(body1, body2):
 
 #def get_binary_period():
 #def get_eff_mass(m1, m2):
-    return (m1*m2)/(m1+m2)
+    #return (m1*m2)/(m1+m2)
 
 
 def detect_binaries(run_name):  # e.g "results2.py"
@@ -148,11 +148,11 @@ def get_binary(body_list):
 
 
 def get_most_bound(body_list):
-        EP_dict = get_all_pot_energy(body_list)
-        if EP_dict == {}:
-            return None, None, None
-        target1_ID, target2_ID, potential = get_largest_potential(EP_dict)
-        return target1_ID, target2_ID, potential
+    EP_dict = get_all_pot_energy(body_list)
+    if EP_dict == {}:
+        return None, None, None
+    target1_ID, target2_ID, potential = get_largest_potential(EP_dict)
+    return target1_ID, target2_ID, potential
 
 
 def get_all_pot_energy(body_list):
@@ -249,10 +249,12 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("present_data")
+body_list, binary_index = detect_binaries("test")
 
 # %%
 # Generating all binary objects
+"""
+
 binary_list = []
 for ID in binary_index.keys():
     binary_list.append(binary(ID))
@@ -265,11 +267,13 @@ plt.xlabel("sma")
 plt.ylabel("Mass ratio")
 plt.grid()
 plt.show()
+"""
 # %%
 
-gr.plot_graph("present_data",
-          display="True",
+gr.plot_graph("test",
+          display="All",
           x_dist=2e16,
           plot_pos=1,
-          binary_to_plot=[23, 27],
+          binary_to_plot=[3, 9],
           start=0)
+

@@ -75,6 +75,7 @@ def simulate(destination_directory,
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
     momentum, kinetic, potential, energy = [[] for _ in range(4)]
     pos_x, pos_y, pos_z = ([[] for _ in range(N)] for i in range(3))
+    vel_x, vel_y, vel_z = ([[] for _ in range(N)] for i in range(3))
     r_array, dt_array, percent, time_count, time_to_run, sim_time = [[] for _ in range(6)]
     ax, ay, az, r_min = of.get_accel_soft(N, rx, ry, rz, masses, r_min, eps)
 
@@ -102,10 +103,11 @@ def simulate(destination_directory,
 
         # Save data to file at certain intervals
         if count % report_pos == 0:
-            pos_x, pos_y, pos_z, Ek, Ep, Mom = (
+            pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, Ek, Ep, Mom = (
                     of.report_snapshot(t, Tmax, masses, vx, vy, vz,
                                        rx, ry, rz, N,
-                                       pos_x, pos_y, pos_z, eps))
+                                       pos_x, pos_y, pos_z,
+                                       vel_x, vel_y, vel_z, eps))
             # To get percentage displayed:
             # -> uncomment the print line of of.get_completion()
             # -> Set a Tmax outside of loop
@@ -115,12 +117,13 @@ def simulate(destination_directory,
             potential.append(Ep)
             momentum.append(Mom)
             energy.append(Et)
-            of.save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz,
+            of.save_interval(masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z,
                              destination_directory, index=save_suffix)
             np.savetxt(destination_directory+"/run_time.csv", time_to_run)
             np.savetxt(destination_directory+"/sim_time.csv", sim_time)
             np.savetxt(destination_directory+"/time_step.csv", dt_array)
-            np.savetxt(destination_directory+"/min_r.csv", r_array)
+            np.savetxt(destination_directory+"/kinetic.csv", kinetic)
+            np.savetxt(destination_directory+"/potential.csv", potential)
             end = time.time()
             time_to_run.append(end-start)
             sim_time.append(t)
