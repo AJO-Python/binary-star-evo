@@ -1,12 +1,11 @@
-import orbit_functions
 import Integrator
 
 #  simulate(destination_directory, continue,
 #	save_suffix=, init_conds_name=, init_conds_directory=)
 init_file="init_conds.txt"
 #direc = "/home/ug/c1672922/results/run1"
-direc = "/home/josh/binary-star-evo/results/test"
-init_dir = "/home/josh/binary-star-evo/results/test"
+direc = "results/3x4_standard_long/"
+#init_dir = "./results/test"
 
 Integrator.simulate(direc,
                     CONT_PREVIOUS=False,
@@ -19,7 +18,7 @@ Integrator.simulate(direc,
 #        save_suffix=,		----> eg "masses{save_suffix}.csv"
 #        init_conds_name=,	----> Name of initial conditions file
 #        init_conds_directory=,	----> Location of initial conds file
-#        source_directory=,	----> Location of previous data for conitinuing
+#        source_directory=,	----> Location of previous data for continuing
 #        report_pos=100		----> Frequency of data saves (in time steps)
 
 
