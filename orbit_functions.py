@@ -47,10 +47,10 @@ def save_interval(masses, pos_x, pos_y, pos_z, vx, vy, vz, dest, index=""):
     vel_x, vel_y, vel_z = vx, vy, vz
     file_data = [masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z]
     file_str = ["masses", "pos_x", "pos_y", "pos_z", "vel_x", "vel_y", "vel_z"]
-    for index, file in enumerate(file_data):
+    for index, file_name in enumerate(file_data):
         file_dir = dest + "/" + file_str[index] + ".csv"
         with open(file_dir, "wb") as f:
-            np.savetxt(f, file, delimiter=",")
+            np.savetxt(f, file_name, delimiter=",")
 
 
 def get_init_conds(filename):

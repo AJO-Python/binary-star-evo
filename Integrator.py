@@ -69,7 +69,7 @@ def simulate(destination_directory,
     # Initialising variables/arrays
     dt = 10  # Time step
     t = 0
-    Tmax=1e10
+    Tmax=9.36e14
     count = 0
     eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
@@ -80,7 +80,7 @@ def simulate(destination_directory,
 
     # Starting main loop and timer
     start = time.time()
-    while count >= 0:  # Loop until close program\
+    while t <= Tmax:  # Loop until close program\
         # Using a_0 to calculate vel(t + dt/2) and pos(t + dt/2)
         vx[:] += 0.5*(ax[:])*dt
         vy[:] += 0.5*(ay[:])*dt
@@ -119,6 +119,8 @@ def simulate(destination_directory,
                              destination_directory, index=save_suffix)
             np.savetxt(destination_directory+"/run_time.csv", time_to_run)
             np.savetxt(destination_directory+"/sim_time.csv", sim_time)
+            np.savetxt(destination_directory+"/time_step.csv", dt_array)
+            np.savetxt(destination_directory+"/min_r.csv", r_array)
             end = time.time()
             time_to_run.append(end-start)
             sim_time.append(t)
