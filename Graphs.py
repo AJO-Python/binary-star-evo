@@ -66,7 +66,7 @@ def plot_graph(run_name,
                     p1.scatter(x[0, i],
                                y[0, i],
                                z[0, i],
-                               color="red", marker="o")
+                               color="red", marker="x")
                 else:
                     p1.plot(x[start::plot_pos, i],
                             y[start::plot_pos, i],
@@ -83,6 +83,9 @@ def plot_graph(run_name,
                     pass
             else:
                 pass
+    p1.set_xlim3d(0, 1e16)
+    p1.set_ylim3d(0, 0.5e16)
+    p1.set_zlim3d(0, 0.5e16)
     p1.set_xlabel("X (m)", linespacing=3.1)
     p1.set_ylabel("Y (m)", linespacing=3.1)
     p1.set_zlabel("Z (m)", linespacing=3.1)

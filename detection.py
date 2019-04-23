@@ -89,16 +89,18 @@ class binary:
 
 
 def get_binary_kinetic(body1, body2):
+    #body1.show_atts()
     v1 = of.get_mag(body1.velocity)
     v2 = of.get_mag(body2.velocity)
     EK_1 = of.get_kinetic(v1, body1.mass)
     EK_2 = of.get_kinetic(v2, body2.mass)
+    #print ("EK_1, EK_2: ", EK_1, EK_2)
     return EK_1 + EK_2
 
 
 #def get_binary_period():
-#def get_eff_mass(m1, m2):
-    #return (m1*m2)/(m1+m2)
+def get_eff_mass(m1, m2):
+    return (m1*m2)/(m1+m2)
 
 
 def detect_binaries(run_name):  # e.g "results2.py"
@@ -208,14 +210,14 @@ def get_index(id1, id2, body_list):
     return index1, index2, binary_body
 
 
-def create_body_objects(directory):
+def create_body_objects(directory, index=-1):
     masses = of.get_single_data(directory + "/masses.csv")
-    pos_x = of.get_single_data(directory + "/pos_x.csv")[-1]  # Position has time-varying
-    pos_y = of.get_single_data(directory + "/pos_y.csv")[-1]  # data. Take the [-1] index
-    pos_z = of.get_single_data(directory + "/pos_z.csv")[-1]  # to get last position
-    vel_x = of.get_single_data(directory + "/vel_x.csv")
-    vel_y = of.get_single_data(directory + "/vel_y.csv")
-    vel_z = of.get_single_data(directory + "/vel_z.csv")
+    pos_x = of.get_single_data(directory + "/pos_x.csv")[index]
+    pos_y = of.get_single_data(directory + "/pos_y.csv")[index]
+    pos_z = of.get_single_data(directory + "/pos_z.csv")[index]
+    vel_x = of.get_single_data(directory + "/vel_x.csv")[index]
+    vel_y = of.get_single_data(directory + "/vel_y.csv")[index]
+    vel_z = of.get_single_data(directory + "/vel_z.csv")[index]
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
     for index, mass in enumerate(masses):
@@ -249,15 +251,17 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("test")
+body_list, binary_index = detect_binaries("3x4_standard_long")
 
 # %%
 # Generating all binary objects
-"""
+
 
 binary_list = []
 for ID in binary_index.keys():
     binary_list.append(binary(ID))
+
+"""
 count=0
 plt.figure(1)
 for obj in binary_list:
@@ -270,10 +274,10 @@ plt.show()
 """
 # %%
 
-gr.plot_graph("test",
+gr.plot_graph("3x4_standard_long",
           display="All",
           x_dist=2e16,
           plot_pos=1,
-          binary_to_plot=[3, 9],
+          binary_to_plot=[0, 3],
           start=0)
 
