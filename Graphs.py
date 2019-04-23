@@ -22,8 +22,8 @@ def plot_graph(run_name,
                plot_pos=100,
                display="",
                x_dist=1e16,
-               start=0):
-    run_dir = "./results/"
+               start=0,
+               run_dir="./results/"):
     direc = run_dir + run_name
     x = of.get_single_data(direc + "/pos_x.csv")
     y = of.get_single_data(direc + "/pos_y.csv")
@@ -62,16 +62,17 @@ def plot_graph(run_name,
                     p1.scatter(x[-1, i],
                                y[-1, i],
                                z[-1, i],
-                               color="red", marker=">")
+                               color=col, marker=">")
                     p1.scatter(x[0, i],
                                y[0, i],
                                z[0, i],
-                               color="red", marker="x")
+                               color=col, marker="x")
+                    p1.text(x[-1, i], y[-1, i], z[-1, i], "{}".format(i))
                 else:
                     p1.plot(x[start::plot_pos, i],
                             y[start::plot_pos, i],
                             z[start::plot_pos, i],
-                            color=col, linewidth=0.6, alpha=0.2)
+                            color=col, linewidth=0.6, alpha=0.5)
                     p1.scatter(x[-1, i],
                                y[-1, i],
                                z[-1, i],
@@ -91,6 +92,53 @@ def plot_graph(run_name,
     p1.set_zlabel("Z (m)", linespacing=3.1)
     fig.show()
     # fig = plt.savefig("positions.pdf")
+
+def plot_sim_run(sim_time, run_time, run_name="", subplot=111):
+    if subplot != 111:
+        ax = plt.subplot(subplot)
+    else:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+    plt.loglog(run_time, sim_time)
+    plt.xlabel("Run time (s)")
+    plt.ylabel("Simulation time (s)")
+    plt.title(run_name)
+    plt.grid()
+    plt.set_yscale("log")
+    plt.set_xscale("log")
+
+
+def plot_secondary_graphs(run_name, run_dir="./results/", plot_pos=100):
+    direc = run_dir + run_name
+    data_to_fetch = ["/time_step.csv", "/sim_time.csv", "/run_time.csv",
+                     "/potential.csv", "/kinetic.csv", "/min_r.csv"]
+    data = [of.get_single_data(direc + x) for x in data_to_fetch]
+    
+    dt = data[0][:25000:100]
+    plt.figure()
+    plot_sim_run(data[1], data[2], run_name="1x5 30Gyr")
+    
+    
+    
+    """
+    plt.subplot(221)
+    plt.plot(data[2], data[1])
+    plt.set_yscale("log")
+    
+    plt.subplot(222)
+    #plt.plot(data[3])
+    #plt.plot(data[4])
+    plt.plot(data[3]+data[4])
+    
+    plt.subplot(223)
+    plt.plot(data[5])
+    """
+    plt.show()
+
+
+#data = plot_secondary_graphs("1x5_standard")
+
+
 """
 plot_graph("3x4_standard_long", binary_to_plot=[1, 2],
            display="All",

@@ -103,8 +103,8 @@ def get_eff_mass(m1, m2):
     return (m1*m2)/(m1+m2)
 
 
-def detect_binaries(run_name):  # e.g "results2.py"
-    body_list = create_body_objects("./results/" + run_name)
+def detect_binaries(run_name, calc_index):  # e.g "results2.py"
+    body_list = create_body_objects("./results/" + run_name, calc_index)
     all_bodies = [body for body in body_list]
     global binary_index
     binary_index = {}
@@ -251,7 +251,9 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-body_list, binary_index = detect_binaries("3x4_standard_long")
+run_name = "3x3_standard"
+
+body_list, binary_index = detect_binaries(run_name, 0)
 
 # %%
 # Generating all binary objects
@@ -260,6 +262,18 @@ body_list, binary_index = detect_binaries("3x4_standard_long")
 binary_list = []
 for ID in binary_index.keys():
     binary_list.append(binary(ID))
+
+gr.plot_graph(run_name,
+          display="All",
+          x_dist=2e16,
+          plot_pos=1,
+          binary_to_plot=[6, 8, 7, 9, 3, 4],
+          start=0)
+
+gr.plot_secondary_graphs(run_name)
+# %%
+
+
 
 """
 count=0
@@ -272,12 +286,3 @@ plt.ylabel("Mass ratio")
 plt.grid()
 plt.show()
 """
-# %%
-
-gr.plot_graph("3x4_standard_long",
-          display="All",
-          x_dist=2e16,
-          plot_pos=1,
-          binary_to_plot=[0, 3],
-          start=0)
-
