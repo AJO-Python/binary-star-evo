@@ -99,7 +99,7 @@ def plot_secondary_graphs(run_name,
                           to_plot=["energy"]):
     direc = run_dir + run_name
     data_to_fetch = ["/time_step.csv", "/sim_time.csv", "/run_time.csv",
-                     "/potential.csv", "/kinetic.csv", "/min_r.csv"]
+                     "/potential.csv", "/kinetic.csv"]
     data = [of.get_single_data(direc + x) for x in data_to_fetch]
     data_len = len(data[0])
     for i in range(1, 5):
@@ -131,7 +131,7 @@ def plot_secondary_graphs(run_name,
                      xy=(0.6, 0.3),
                      xycoords='axes fraction')
         plt.grid()
-        plt.savefig("results/{}/energy.png".format(run_name))
+        plt.savefig("results/graphs/{a}energy.png".format(a=run_name))
 
     if "time" in to_plot:
         fig = plt.figure()
@@ -151,7 +151,7 @@ def plot_secondary_graphs(run_name,
         ax2.set_ylabel("Time step (s)")
         ax2.grid()
         plt.tight_layout(pad=0.4, h_pad=1)
-        plt.savefig("results/{}/time.png".format(run_name))
+        plt.savefig("results/graphs/{a}time.png".format(a=run_name))
 
     if "sim_run" in to_plot:
         plt.figure()
@@ -160,10 +160,12 @@ def plot_secondary_graphs(run_name,
         plt.ylabel("Simulation time (s)")
         plt.title("{}: Run time against simulation time".format(run_name))
         plt.grid()
-        plt.savefig("results/{}/sim_run.png".format(run_name))
+        plt.savefig("results/graphs/{a}sim_run.png".format(a=run_name))
     return data, dt
 
-runs = ["3x3_standard", "1x5_standard"]
+runs = ["1x5_standard",
+        "3x3_standard", "5x3_standard", "6x3_standard",
+        "3x5_standard", "4x3_standard"]
 for run in runs:
     data, dt = plot_secondary_graphs(run, to_plot=["time", "sim_run", "energy"])
 

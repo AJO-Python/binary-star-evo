@@ -151,6 +151,7 @@ def get_binary(body_list):
 
 def get_most_bound(body_list):
     EP_dict = get_all_pot_energy(body_list)
+    return EP_dict
     if EP_dict == {}:
         return None, None, None
     target1_ID, target2_ID, potential = get_largest_potential(EP_dict)
@@ -252,8 +253,8 @@ def merge(body1, body2):
 
 
 run_name = "3x3_standard"
-
-body_list, binary_index = detect_binaries(run_name, 0)
+body_list = detect_binaries(run_name, 0)
+#body_list, binary_index = detect_binaries(run_name, 0)
 
 # %%
 # Generating all binary objects
