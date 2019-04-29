@@ -16,6 +16,10 @@ import random
 # %%
 
 
+def get_moving_average(interval, window_size):
+    window= np.ones(int(window_size)) / float(window_size)
+    return np.convolve(interval, window, 'same')
+
 
 def plot_graph(run_name,
                binary_to_plot=[],
@@ -109,6 +113,7 @@ def plot_secondary_graphs(run_name,
         for i in range(1, 5):
             data[i] = data[i][:data_len]
     total_energy = data[3]-data[4]
+    total_energy_av = get_moving_average(total_energy, 100)
     dt = data[0]
     start=0
     end=-1
@@ -120,12 +125,12 @@ def plot_secondary_graphs(run_name,
         plt.plot(data[1][start:end],
                  data[4][start:end], label="Kinetic Energy")
         plt.plot(data[1][start:end],
-                 total_energy[start:end], label="Total Energy")
+                 total_energy_av[start:end], label="Total Energy")
         plt.xlabel("Simulation time (s)")
         plt.ylabel("Energy (J)")
         plt.title("{}: Energy of system".format(run_name))
         plt.legend(loc="best")
-        slope, intercept = np.polyfit(total_energy,
+        slope, intercept = np.polyfit(total_energy_av,
                                       np.arange(len(total_energy)), 1)
         plt.annotate("Gradient of total energy:\n{:.3e}".format(slope),
                      xy=(0.6, 0.3),
@@ -166,8 +171,8 @@ def plot_secondary_graphs(run_name,
 runs = ["1x5_standard",
         "3x3_standard", "5x3_standard", "6x3_standard",
         "3x5_standard", "4x3_standard"]
-#for run in runs:
-#    data, dt = plot_secondary_graphs(run, to_plot=["time", "sim_run", "energy"])
+for run in runs:
+    data, dt = plot_secondary_graphs(run, to_plot=["energy"])
 
 """
 plot_graph("6x3_standard",
