@@ -58,7 +58,7 @@ def plot_graph(run_name,
                     p1.plot(x[::plot_pos, i],
                             y[::plot_pos, i],
                             z[::plot_pos, i],
-                            color="red", linewidth=0.8)
+                            color="blue", linewidth=0.8)
                     p1.scatter(x[-1, i],
                                y[-1, i],
                                z[-1, i],
@@ -66,7 +66,7 @@ def plot_graph(run_name,
                     p1.scatter(x[0, i],
                                y[0, i],
                                z[0, i],
-                               color=col, marker="x")
+                               color="red", marker="x")
                     p1.text(x[-1, i], y[-1, i], z[-1, i], "{}".format(i))
                 else:
                     p1.plot(x[start::plot_pos, i],
@@ -84,9 +84,9 @@ def plot_graph(run_name,
                     pass
             else:
                 pass
-    p1.set_xlim3d(0, 1e16)
-    p1.set_ylim3d(0, 0.5e16)
-    p1.set_zlim3d(0, 0.5e16)
+    #p1.set_xlim3d(1e15, 6e15)
+    #p1.set_ylim3d(-1, 4e15)
+    #p1.set_zlim3d(0, 5e15)
     p1.set_xlabel("X (m)", linespacing=3.1)
     p1.set_ylabel("Y (m)", linespacing=3.1)
     p1.set_zlabel("Z (m)", linespacing=3.1)
@@ -166,10 +166,16 @@ def plot_secondary_graphs(run_name,
 runs = ["1x5_standard",
         "3x3_standard", "5x3_standard", "6x3_standard",
         "3x5_standard", "4x3_standard"]
-for run in runs:
-    data, dt = plot_secondary_graphs(run, to_plot=["time", "sim_run", "energy"])
+#for run in runs:
+#    data, dt = plot_secondary_graphs(run, to_plot=["time", "sim_run", "energy"])
 
-
+"""
+plot_graph("6x3_standard",
+           display="True",
+           x_dist=2e16,
+           binary_to_plot=[],
+           plot_pos=100)
+"""
 """
 plot_graph("3x4_standard_long", binary_to_plot=[1, 2],
            display="All",

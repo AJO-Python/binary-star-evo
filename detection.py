@@ -252,9 +252,9 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-run_name = "3x3_standard"
-body_list = detect_binaries(run_name, 0)
-#body_list, binary_index = detect_binaries(run_name, 0)
+run_name = "4x3_standard"
+#body_list = detect_binaries(run_name, 0)
+body_list, binary_index = detect_binaries(run_name, -1)
 
 # %%
 # Generating all binary objects
@@ -264,6 +264,8 @@ binary_list = []
 for ID in binary_index.keys():
     binary_list.append(binary(ID))
 
+
+"""
 gr.plot_graph(run_name,
           display="All",
           x_dist=2e16,
@@ -272,6 +274,7 @@ gr.plot_graph(run_name,
           start=0)
 
 gr.plot_secondary_graphs(run_name)
+"""
 # %%
 
 
