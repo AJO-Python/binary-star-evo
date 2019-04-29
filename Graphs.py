@@ -106,12 +106,13 @@ def plot_secondary_graphs(run_name,
                      "/potential.csv", "/kinetic.csv"]
     data = [of.get_single_data(direc + x) for x in data_to_fetch]
     data_len = len(data[0])
+    # Gets smallest data set (excluding dt) and sets all data to that length
     for i in range(1, 5):
         temp_len = len(data[i])
         if temp_len < data_len:
             data_len = temp_len
         for i in range(1, 5):
-            data[i] = data[i][:data_len]
+            data[i] = data[i][1:data_len]
     total_energy = data[3]-data[4]
     total_energy_av = get_moving_average(total_energy, 100)
     dt = data[0]
@@ -135,8 +136,8 @@ def plot_secondary_graphs(run_name,
         plt.annotate("Gradient of total energy:\n{:.3e}".format(slope),
                      xy=(0.6, 0.3),
                      xycoords='axes fraction')
-        plt.grid()
-        plt.savefig("results/graphs/{a}energy.png".format(a=run_name))
+        file_name = "results/graphs/{}energy.png".format(run_name)
+        plt.savefig(file_name)
 
     if "time" in to_plot:
         fig = plt.figure()
@@ -156,23 +157,35 @@ def plot_secondary_graphs(run_name,
         ax2.set_ylabel("Time step (s)")
         ax2.grid()
         plt.tight_layout(pad=0.4, h_pad=1)
-        plt.savefig("results/graphs/{a}time.png".format(a=run_name))
+        plt.savefig("results/graphs/{}time.png".format(run_name))
 
     if "sim_run" in to_plot:
-        plt.figure()
-        plt.loglog(data[2], data[1])
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        log_run = np.log(data[2])
+        log_sim = np.log(data[1])
+        grad, intercept = np.polyfit(log_run, log_sim, 1)
+        sim_fit = np.exp(grad*log_run + intercept)
+        plt.plot(data[2], data[1], label="Simulation data")
+        plt.plot(data[2], sim_fit, label="Fit")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
         plt.xlabel("Run time (s)")
         plt.ylabel("Simulation time (s)")
-        plt.title("{}: Run time against simulation time".format(run_name))
+        ax.set_title("{}: Run time against simulation time".format(run_name))
+        plt.annotate("Gradient:{:.3e}".format(grad),
+                     xy=(0.6, 0.3),
+                     xycoords='axes fraction')
         plt.grid()
         plt.savefig("results/graphs/{a}sim_run.png".format(a=run_name))
     return data, dt
+
 
 runs = ["1x5_standard",
         "3x3_standard", "5x3_standard", "6x3_standard",
         "3x5_standard", "4x3_standard"]
 for run in runs:
-    data, dt = plot_secondary_graphs(run, to_plot=["energy"])
+    data, dt = plot_secondary_graphs(run, to_plot=["sim_run"])
 
 """
 plot_graph("6x3_standard",
