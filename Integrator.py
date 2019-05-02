@@ -69,7 +69,7 @@ def simulate(destination_directory,
     # Initialising variables/arrays
     dt = 10  # Time step
     t = 0
-    Tmax=9.36e14
+    Tmax=9.36e13
     count = 0
     eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
@@ -119,14 +119,15 @@ def simulate(destination_directory,
             energy.append(Et)
             of.save_interval(masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z,
                              destination_directory, index=save_suffix)
-            np.savetxt(destination_directory+"/run_time.csv", time_to_run)
-            np.savetxt(destination_directory+"/sim_time.csv", sim_time)
-            np.savetxt(destination_directory+"/time_step.csv", dt_array)
             np.savetxt(destination_directory+"/kinetic.csv", kinetic)
             np.savetxt(destination_directory+"/potential.csv", potential)
+            np.savetxt(destination_directory+"/momentum.csv", momentum)
             end = time.time()
             time_to_run.append(end-start)
             sim_time.append(t)
+            np.savetxt(destination_directory+"/run_time.csv", time_to_run)
+            np.savetxt(destination_directory+"/sim_time.csv", sim_time)
+            np.savetxt(destination_directory+"/time_step.csv", dt_array)
         # Closest approach calculations and storing
         R_min = of.get_mag(r_min)
         R_temp = of.get_mag(r_temp)
@@ -136,8 +137,11 @@ def simulate(destination_directory,
         r_array.append(R_min)
 
         # Dynamic time step calculation
-        a = of.get_mag([ax, ay, az])
-        dt = np.sqrt(2*0.66*eps/max(a))
+        accel = []
+        for i, _ in enumerate(ax):
+            accel.append(of.get_mag([ax[i], ay[i], az[i]]))
+        a_max = max(accel)
+        dt = np.sqrt(2*0.66*eps/a_max)
         dt_array.append(dt)
         # eps = (3/4)*max(a)*dt**2
         # Incrementing relevant counters

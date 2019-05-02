@@ -15,10 +15,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.colors as colors
 import orbit_functions as of
 import random
-np.random.seed(124)
+#np.random.seed(124)
 
 
-RUN_NAME = "run3"
+RUN_NAME = "test"
 # Fetch initial conditions from txt file
 init_vars = of.get_init_conds("./results/" + RUN_NAME + "/init_conds.txt")
 # Format data to integer type
@@ -44,10 +44,10 @@ p1 = Axes3D(fig)
 #p1.set_zlim3d(of.min_max(z))
 
 # Set axis to display at 1:1:1 scale
-x_dist = 5e16 # Set to the x length of filament
-p1.set_xlim3d(0, x_dist)
-p1.set_ylim3d(-x_dist/2, x_dist/2)
-p1.set_zlim3d(-x_dist/2, x_dist/2)
+#x_dist = 5e16 # Set to the x length of filament
+#p1.set_xlim3d(0, x_dist)
+#p1.set_ylim3d(-x_dist/2, x_dist/2)
+#p1.set_zlim3d(-x_dist/2, x_dist/2)
 
 
 for j in range(N_cluster):  # looping through clusters to set same colour for whole cluster

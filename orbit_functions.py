@@ -57,9 +57,10 @@ def get_init_conds(filename):
     data = []
     with open(filename, "r") as f:
         for line in f:
-            line = line.strip()
-            info = line.split("=")
-            data.append(info[1])
+            line = line.split("=")
+            info = line[1]
+            info = info.strip()
+            data.append(info)
     return data
 
 

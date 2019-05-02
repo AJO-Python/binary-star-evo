@@ -180,12 +180,14 @@ def plot_secondary_graphs(run_name,
         plt.savefig("results/graphs/{a}sim_run.png".format(a=run_name))
     return data, dt
 
-#
-#runs = ["1x5_standard",
-#        "3x3_standard", "5x3_standard", "6x3_standard",
-#        "3x5_standard", "4x3_standard"]
-#for run in runs:
-#    data, dt = plot_secondary_graphs(run, to_plot=["sim_run"])
+if __name__ == "__main__":
+    runs = ["1x5_standard",
+            "3x3_standard", "5x3_standard", "6x3_standard",
+            "3x5_standard", "4x3_standard"]
+    runs=["test"]
+    for run in runs:
+        plot_graph(run, plot_pos=10)
+        data, dt = plot_secondary_graphs(run, to_plot=["time"])
 
 """
 plot_graph("6x3_standard",
