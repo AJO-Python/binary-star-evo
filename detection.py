@@ -151,7 +151,6 @@ def get_binary(body_list):
 
 def get_most_bound(body_list):
     EP_dict = get_all_pot_energy(body_list)
-    return EP_dict
     if EP_dict == {}:
         return None, None, None
     target1_ID, target2_ID, potential = get_largest_potential(EP_dict)
@@ -212,6 +211,7 @@ def get_index(id1, id2, body_list):
 
 
 def create_body_objects(directory, index=-1):
+    global pos_x, vel_x, vel_y, vel_z
     masses = of.get_single_data(directory + "/masses.csv")
     pos_x = of.get_single_data(directory + "/pos_x.csv")[index]
     pos_y = of.get_single_data(directory + "/pos_y.csv")[index]
@@ -221,7 +221,10 @@ def create_body_objects(directory, index=-1):
     vel_z = of.get_single_data(directory + "/vel_z.csv")[index]
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
+    print(len(masses))
     for index, mass in enumerate(masses):
+        print(index)
+        global pos, vel
         pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
         vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
         temp_body = body_class(mass, pos, vel)
@@ -252,7 +255,7 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-run_name = "4x3_standard"
+run_name = "5x3_standard"
 #body_list = detect_binaries(run_name, 0)
 body_list, binary_index = detect_binaries(run_name, -1)
 
