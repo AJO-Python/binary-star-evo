@@ -17,12 +17,6 @@ G = 6.674e-11
 au = 1.49597e11
 pc = 3.0857e16
 
-"""
-TODO:
-
-
-"""
-
 
 class body_class:
     # Class count of how many bodies have been created
@@ -106,7 +100,6 @@ def get_eff_mass(m1, m2):
 def detect_binaries(run_name, calc_index):  # e.g "results2.py"
     body_list = create_body_objects("./results/" + run_name, calc_index)
     all_bodies = [body for body in body_list]
-    global binary_index
     binary_index = {}
     highest_order = 0
     counter = 0
@@ -221,10 +214,7 @@ def create_body_objects(directory, index=-1):
     vel_z = of.get_single_data(directory + "/vel_z.csv")[index]
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
-    print(len(masses))
     for index, mass in enumerate(masses):
-        print(index)
-        global pos, vel
         pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
         vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
         temp_body = body_class(mass, pos, vel)
@@ -255,9 +245,14 @@ def merge(body1, body2):
     return mass, pos, vel, order_binary
 
 
-run_name = "5x3_standard"
+run_name = ["3x4_standard"]
+#run_name = ["1x5_seed1"]
+binaries = []
 #body_list = detect_binaries(run_name, 0)
-body_list, binary_index = detect_binaries(run_name, -1)
+for run in run_name:
+    binary_index = {}
+    body_list, binary_index = detect_binaries(run, -1)
+    print(binary_index)
 
 # %%
 # Generating all binary objects

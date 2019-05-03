@@ -1,0 +1,32 @@
+cp: cannot create regular file 'results/1x5_seed1/init_conds.txt': No such file or directory
+]0;IPython: josh/binary-star-evo[0;31m---------------------------------------------------------------------------[0m
+[0;31mFileNotFoundError[0m                         Traceback (most recent call last)
+[0;32m~/binary-star-evo/orbit.py[0m in [0;36m<module>[0;34m[0m
+[1;32m     11[0m                     [0mCONT_PREVIOUS[0m[0;34m=[0m[0;32mFalse[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     12[0m                     [0minit_conds_name[0m[0;34m=[0m[0minit_file[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 13[0;31m                     report_pos=100)
+[0m[1;32m     14[0m [0;34m[0m[0m
+[1;32m     15[0m [0;31m#Integrator.simulate([0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/binary-star-evo/Integrator.py[0m in [0;36msimulate[0;34m(destination_directory, CONT_PREVIOUS, save_suffix, init_conds_name, init_conds_directory, source_directory, report_pos)[0m
+[1;32m     42[0m         cluster_list = of.generate_full_filament(destination_directory,
+[1;32m     43[0m                                                  [0minit_conds_directory[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 44[0;31m                                                  init_conds_name)
+[0m[1;32m     45[0m         [0mnum_to_strip[0m [0;34m=[0m [0;36m0[0m  [0;31m# clean data by removing trailing points[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     46[0m         [0;31m# Saving init_conds to file[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/binary-star-evo/orbit_functions.py[0m in [0;36mgenerate_full_filament[0;34m(destination_directory, init_conds_directory, init_conds_name)[0m
+[1;32m    313[0m                                   [0minit_conds_directory[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    314[0m                                   init_conds_name):
+[0;32m--> 315[0;31m         [0mclean_results_files[0m[0;34m([0m[0mdestination_directory[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m    316[0m         [0minit_vars[0m [0;34m=[0m [0mget_init_conds[0m[0;34m([0m[0minit_conds_directory[0m [0;34m+[0m [0minit_conds_name[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    317[0m         [0minit_vars[0m [0;34m=[0m [0;34m[[0m[0mint[0m[0;34m([0m[0mi[0m[0;34m)[0m [0;32mfor[0m [0mi[0m [0;32min[0m [0minit_vars[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/binary-star-evo/orbit_functions.py[0m in [0;36mclean_results_files[0;34m(direc)[0m
+[1;32m     72[0m     [0;31m# Ensuring the files all exist and are empty[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     73[0m     [0;32mfor[0m [0mi[0m [0;32min[0m [0mfile_names[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 74[0;31m         [0;32mwith[0m [0mopen[0m[0;34m([0m[0mdirec[0m [0;34m+[0m [0mi[0m[0;34m,[0m [0;34m"w"[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     75[0m             [0;32mpass[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     76[0m [0;34m[0m[0m
+
+[0;31mFileNotFoundError[0m: [Errno 2] No such file or directory: 'results/1x5_seed1//cluster.csv'

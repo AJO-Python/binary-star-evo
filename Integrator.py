@@ -34,6 +34,8 @@ def simulate(destination_directory,
     report_pos = Number of time steps between updating the save file
     """
     # Saving "init_conds.txt" to results directory
+    if not os.path.isdir(destination_directory):
+        os.mkdir(destination_directory)
     source_cp = "cp " + init_conds_directory + init_conds_name
     os.popen(source_cp + " " + destination_directory + init_conds_name)
 
@@ -69,7 +71,7 @@ def simulate(destination_directory,
     # Initialising variables/arrays
     dt = 10  # Time step
     t = 0
-    Tmax=9.36e13
+    Tmax=5e14
     count = 0
     eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation
@@ -117,6 +119,7 @@ def simulate(destination_directory,
             potential.append(Ep)
             momentum.append(Mom)
             energy.append(Et)
+            dt_array.append(dt)
             of.save_interval(masses, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z,
                              destination_directory, index=save_suffix)
             np.savetxt(destination_directory+"/kinetic.csv", kinetic)
@@ -142,7 +145,6 @@ def simulate(destination_directory,
             accel.append(of.get_mag([ax[i], ay[i], az[i]]))
         a_max = max(accel)
         dt = np.sqrt(2*0.66*eps/a_max)
-        dt_array.append(dt)
         # eps = (3/4)*max(a)*dt**2
         # Incrementing relevant counters
         time_count.append(t)

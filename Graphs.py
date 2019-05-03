@@ -43,7 +43,8 @@ def plot_graph(run_name,
     fig = plt.figure()
     p1 = Axes3D(fig)
     if display == "True":
-        p1.set_xlim3d(0, x_dist)
+        #p1.set_xlim3d(0, x_dist)
+        p1.set_xlim3d(-x_dist/2, x_dist/2)
         p1.set_ylim3d(-x_dist/2, x_dist/2)
         p1.set_zlim3d(-x_dist/2, x_dist/2)
 
@@ -54,7 +55,7 @@ def plot_graph(run_name,
 
     for j in range(N_cluster):  # looping through cluster index
         col = random.choice(colors_list)
-        #col="blue"
+        col="blue"
         #for i, col in zip([4, 10, 13, 17], ["blue", "red", "red", "black"]):
         for i in range(len(x[0])):  # looping through bodies index
             if (i >= N*j and i < N*(j+1)) or (j==0 and i==0):
@@ -62,16 +63,16 @@ def plot_graph(run_name,
                     p1.plot(x[::plot_pos, i],
                             y[::plot_pos, i],
                             z[::plot_pos, i],
-                            color="blue", linewidth=0.8)
+                            color="red", linewidth=0.8)
                     p1.scatter(x[-1, i],
                                y[-1, i],
                                z[-1, i],
-                               color=col, marker=">")
+                               color="red", marker=">")
                     p1.scatter(x[0, i],
                                y[0, i],
                                z[0, i],
                                color="red", marker="x")
-                    p1.text(x[-1, i], y[-1, i], z[-1, i], "{}".format(i))
+                    p1.text(x[0, i], y[0, i], z[0, i], "{}".format(i))
                 else:
                     p1.plot(x[start::plot_pos, i],
                             y[start::plot_pos, i],
@@ -95,47 +96,57 @@ def plot_graph(run_name,
     p1.set_ylabel("Y (m)", linespacing=3.1)
     p1.set_zlabel("Z (m)", linespacing=3.1)
     fig.show()
-    # fig = plt.savefig("positions.pdf")
+    file_name = "results/graphs/{}position.png".format(run_name)
+    plt.savefig(file_name)
 
 def plot_secondary_graphs(run_name,
                           run_dir="./results/",
                           plot_pos=100,
                           to_plot=["energy"]):
+    global data
     direc = run_dir + run_name
     data_to_fetch = ["/time_step.csv", "/sim_time.csv", "/run_time.csv",
-                     "/potential.csv", "/kinetic.csv"]
-    data = [of.get_single_data(direc + x) for x in data_to_fetch]
+                     "/potential.csv", "/kinetic.csv", "/momentum.csv"]
+    try:
+        data = [of.get_single_data(direc + x) for x in data_to_fetch]
+    except:
+        data = [of.get_single_data(direc + x) for x in data_to_fetch[:-1]]
     data_len = len(data[0])
     # Gets smallest data set (excluding dt) and sets all data to that length
-    for i in range(1, 5):
+    for i, _ in enumerate(data):
         temp_len = len(data[i])
         if temp_len < data_len:
             data_len = temp_len
-        for i in range(1, 5):
-            data[i] = data[i][1:data_len]
+    for i, _ in enumerate(data):
+        data[i] = data[i][1:data_len]
     total_energy = data[3]-data[4]
-    total_energy_av = get_moving_average(total_energy, 100)
+    total_energy_av = get_moving_average(total_energy, 1000)
     dt = data[0]
     start=0
     end=-1
 
     if "energy" in to_plot:
-        plt.figure()
-        plt.plot(data[1][start:end],
-                 data[3][start:end], label="Potential Energy")
-        plt.plot(data[1][start:end],
-                 data[4][start:end], label="Kinetic Energy")
-        plt.plot(data[1][start:end],
-                 total_energy_av[start:end], label="Total Energy")
-        plt.xlabel("Simulation time (s)")
-        plt.ylabel("Energy (J)")
-        plt.title("{}: Energy of system".format(run_name))
-        plt.legend(loc="best")
-        slope, intercept = np.polyfit(total_energy_av,
-                                      np.arange(len(total_energy)), 1)
-        plt.annotate("Gradient of total energy:\n{:.3e}".format(slope),
-                     xy=(0.6, 0.3),
-                     xycoords='axes fraction')
+        fig = plt.figure()
+        ax = fig.add_subplot(211)
+        ax.set_title("{}: Energy of system per calculation".format(run_name))
+        ax.plot(data[3], label="Potential Energy")
+        ax.plot(data[4], label="Kinetic Energy")
+        ax.plot(total_energy_av, label="Total Energy")
+        ax.set_xlabel("Calculation step")
+        ax.set_ylabel("Energy (J)")
+        ax.grid()
+
+        ax2 = fig.add_subplot(212)
+        ax2.set_title("{}: Energy against simulation time".format(run_name))
+        ax2.plot(data[1], data[3], label="Potential Energy")
+        ax2.plot(data[1], data[4], label="Kinetic Energy")
+        ax2.plot(data[1], total_energy_av, label="Total Energy")
+        ax2.legend(loc="best")
+        ax2.set_xlabel("Simulation time (s)")
+        ax2.set_ylabel("Energy (J)")
+        ax2.grid()
+
+        plt.tight_layout(pad=0.4, h_pad=1)
         file_name = "results/graphs/{}energy.png".format(run_name)
         plt.savefig(file_name)
 
@@ -143,17 +154,17 @@ def plot_secondary_graphs(run_name,
         fig = plt.figure()
         ax = fig.add_subplot(211)
         ax.set_title("{}: Time step per calculation".format(run_name))
-        ax.semilogy(data[0], label="Time step")
+        ax.semilogy(dt, label="Time step")
         ax.legend(loc="best")
         ax.set_xlabel("Calculation number")
         ax.set_ylabel("Time step (s)")
         ax.grid()
 
         ax2 = fig.add_subplot(212)
-        ax2.set_title("{}: Time step per calculation (last 5000 points)".format(run_name))
-        ax2.semilogy(data[0][-5000:], label="Time step")
+        ax2.set_title("{}: Time step against simulation time".format(run_name))
+        ax2.loglog(data[1], dt, label="Time step")
         ax2.legend(loc="lower right")
-        ax2.set_xlabel("Calculation number")
+        ax2.set_xlabel("Simulation time (s)")
         ax2.set_ylabel("Time step (s)")
         ax2.grid()
         plt.tight_layout(pad=0.4, h_pad=1)
@@ -167,7 +178,7 @@ def plot_secondary_graphs(run_name,
         grad, intercept = np.polyfit(log_run, log_sim, 1)
         sim_fit = np.exp(grad*log_run + intercept)
         plt.plot(data[2], data[1], label="Simulation data")
-        plt.plot(data[2], sim_fit, label="Fit")
+        #plt.plot(data[2], sim_fit, label="Fit")
         ax.set_xscale("log")
         ax.set_yscale("log")
         plt.xlabel("Run time (s)")
@@ -178,16 +189,39 @@ def plot_secondary_graphs(run_name,
                      xycoords='axes fraction')
         plt.grid()
         plt.savefig("results/graphs/{a}sim_run.png".format(a=run_name))
-    return data, dt
+
+    if "momentum" in to_plot:
+        fig = plt.figure()
+        ax = fig.add_subplot(211)
+        ax.set_title("{}: Momentum step per calculation".format(run_name))
+        ax.plot(data[5], label="Momentum")
+        ax.legend(loc="best")
+        ax.set_xlabel("Calculation number")
+        ax.set_ylabel("Momentum (kg m/s)")
+        ax.grid()
+
+        ax2 = fig.add_subplot(212)
+        ax2.set_title("{}: Momentum against simulation time".format(run_name))
+        ax2.loglog(data[1], data[5], label="Momentum")
+        ax2.set_xlabel("Simulation time (s)")
+        ax2.set_ylabel("Momentum (kg m/s)")
+        ax2.grid()
+        plt.tight_layout(pad=0.4, h_pad=1)
+        plt.savefig("results/graphs/{}momentum.png".format(run_name))
+
+    return data
 
 if __name__ == "__main__":
-    runs = ["1x5_standard",
-            "3x3_standard", "5x3_standard", "6x3_standard",
-            "3x5_standard", "4x3_standard"]
-    runs=["test"]
+
+
+    runs=["3x4_standard"]
     for run in runs:
-        plot_graph(run, plot_pos=10)
-        data, dt = plot_secondary_graphs(run, to_plot=["time"])
+        plot_graph(run,
+                   plot_pos=1,
+                   display="True",
+                   x_dist=4e16,
+                   binary_to_plot=[3, 4, 10 ,12])
+        data = plot_secondary_graphs(run, to_plot=["energy", "sim_run", "time", "momentum"])
 
 """
 plot_graph("6x3_standard",
