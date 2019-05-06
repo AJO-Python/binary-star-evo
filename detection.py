@@ -19,13 +19,14 @@ au = 1.49597e11
 pc = 3.0857e16
 
 
-run_name = ["3x4_standard", "3x3_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3"]
-#"3x4_standard", "3x3_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3"]
-#run_name = ["1x5_seed1"]
+run_name = ["1x5_seed1", "1x5_seed2", "1x5_seed3", "1x5_seed5",
+            "1x5_seed6", "1x5_seed8", "1x5_seed9", "1x5_seed10"]
+#run_name = ["1x5_seed2"]
 
 binary_list = []
 #body_list = detect_binaries(run_name, 0)
 for run in run_name:
+    print(run)
     df.body_class.ID = 0
     binary_index = {}
     binaries = []
@@ -33,7 +34,14 @@ for run in run_name:
     pairs = {}
     sorted_pairs = []
     sorted_pairs_fixed = []
+    direc = "./results/" + run
     #body_list, binary_index = detect_binaries(run, -1)
+    x = of.get_single_data(direc + "/pos_x.csv")
+    y = of.get_single_data(direc + "/pos_y.csv")
+    z = of.get_single_data(direc + "/pos_z.csv")
+    vx = of.get_single_data(direc + "/vel_x.csv")
+    vy = of.get_single_data(direc + "/vel_y.csv")
+    vz = of.get_single_data(direc + "/vel_z.csv")
     pairs, body_list = df.new_detect_binaries(run, -1)
 
     sorted_pairs = sorted(pairs.items(), key=lambda kv: kv[1])
@@ -55,22 +63,23 @@ for run in run_name:
 
 # %%
 """
-gr.plot_graph(run_name,
+gr.plot_graph("1x5_seed2",
           display="All",
           x_dist=2e16,
           plot_pos=1,
-          binary_to_plot=[6, 8, 7, 9, 3, 4],
+          binary_to_plot=[0, 3, 1],
           start=0)
 
-gr.plot_secondary_graphs(run_name)
-
+#gr.plot_secondary_graphs(run_name)
+"""
 # %%
+
 sma, potential, mr = [], [], []
 for binary in binary_list:
     if abs(binary.sma) > 5000:
         continue
     else:
-        sma.append(binary.sma)
+        sma.append(abs(binary.sma))
         potential.append(abs(binary.EP))
         mr.append(binary.mr)
 # %%
@@ -83,23 +92,40 @@ fit = np.exp(grad*log_sma + intercept)
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.scatter(sma, potential)
-ax.plot(sma, fit)
-#ax.set_yscale("log")
-#ax.set_xscale("log")
+#ax.plot(sma, fit)
+ax.set_yscale("log")
+ax.set_xscale("log")
 ax.set_xlabel("Semi-major axis (au)")
-ax.set_ylabel("Potential energy")
-plt.annotate("y = {:.3} x^{:.3}".format(intercept, grad),
-             xy=(0.5, 0.7),
-             xycoords='axes fraction')
+ax.set_ylabel("Potential energy (J)")
+#plt.annotate("y = {:.3} x^{:.3}".format(intercept, grad),
+#             xy=(0.5, 0.7),
+#             xycoords='axes fraction')
 plt.title("Semi-major axis against potential energy of binary pairs")
 plt.grid()
-plt.show()
 plt.savefig("results/graphs/{a}sma_pot.png".format(a="all_"))
 
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.scatter(sma, mr)
-plt.show()
+ax.set_xlabel("Semi-major axis (au)")
+ax.set_ylabel("mass ratio")
+plt.title("Semi-major axis against mass ratio of binary pairs")
+plt.grid()
+plt.savefig("results/graphs/{a}sma_mr.png".format(a="all_"))
 
-"""
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(mr, potential)
+ax.set_xlabel("mass ratio")
+ax.set_ylabel("Potential energy")
+plt.title("Mass ratio against potential energy of binary pairs")
+plt.grid()
+plt.savefig("results/graphs/{a}mr_pot.png".format(a="all_"))
+
+#%%
+fig = plt.figure()
+ax = fig.add_subplot(111)
+n, bins, patches = ax.hist(sma, 30)
+plt.savefig("results/graphs/{a}sma_hist.png".format(a="all_"))

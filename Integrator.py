@@ -71,7 +71,7 @@ def simulate(destination_directory,
     # Initialising variables/arrays
     dt = 10  # Time step
     t = 0
-    Tmax=5e14
+    Tmax=2e14
     count = 0
     eps = 1e9
     r_min = [1e50, 1e50, 1e50]  # Arbitrary value > minimum body seperation

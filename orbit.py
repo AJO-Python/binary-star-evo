@@ -4,7 +4,7 @@ import Integrator
 #	save_suffix=, init_conds_name=, init_conds_directory=)
 init_file="init_conds.txt"
 #direc = "/home/ug/c1672922/results/run1"
-direc = "results/1x2_verlet/"
+direc = "results/1x5_seed10/"
 #init_dir = "./results/test"
 
 Integrator.simulate(direc,
