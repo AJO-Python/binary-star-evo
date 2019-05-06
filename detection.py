@@ -19,13 +19,14 @@ au = 1.49597e11
 pc = 3.0857e16
 
 
-run_name = ["3x4_standard", "3x3_standard"]
+run_name = ["3x4_standard", "3x3_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3"]
 #"3x4_standard", "3x3_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3"]
 #run_name = ["1x5_seed1"]
 
 binary_list = []
 #body_list = detect_binaries(run_name, 0)
 for run in run_name:
+    df.body_class.ID = 0
     binary_index = {}
     binaries = []
     body_list = []

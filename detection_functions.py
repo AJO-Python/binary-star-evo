@@ -247,8 +247,8 @@ def new_detect_binaries(run_name, calc_index):
     body_list = create_body_objects("./results/" + run_name, calc_index)
     all_bodies = [body for body in body_list]
     pairs = {}
-    for primary in body_list:
-        for secondary in body_list:
+    for i, primary in enumerate(body_list):
+        for j, secondary in enumerate(body_list):
             if primary is secondary:
                 pass
             else:
