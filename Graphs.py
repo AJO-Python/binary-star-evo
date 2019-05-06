@@ -43,8 +43,8 @@ def plot_graph(run_name,
     fig = plt.figure()
     p1 = Axes3D(fig)
     if display == "True":
-        #p1.set_xlim3d(0, x_dist)
-        p1.set_xlim3d(-x_dist/2, x_dist/2)
+        p1.set_xlim3d(0, x_dist)
+        #p1.set_xlim3d(-x_dist/2, x_dist/2)
         p1.set_ylim3d(-x_dist/2, x_dist/2)
         p1.set_zlim3d(-x_dist/2, x_dist/2)
 
@@ -95,7 +95,6 @@ def plot_graph(run_name,
     p1.set_xlabel("X (m)", linespacing=3.1)
     p1.set_ylabel("Y (m)", linespacing=3.1)
     p1.set_zlabel("Z (m)", linespacing=3.1)
-    fig.show()
     file_name = "results/graphs/{}position.png".format(run_name)
     plt.savefig(file_name)
 
@@ -162,7 +161,7 @@ def plot_secondary_graphs(run_name,
 
         ax2 = fig.add_subplot(212)
         ax2.set_title("{}: Time step against simulation time".format(run_name))
-        ax2.loglog(data[1], dt, label="Time step")
+        ax2.semilogy(data[1], dt, label="Time step")
         ax2.legend(loc="lower right")
         ax2.set_xlabel("Simulation time (s)")
         ax2.set_ylabel("Time step (s)")
@@ -175,10 +174,11 @@ def plot_secondary_graphs(run_name,
         ax = fig.add_subplot(111)
         log_run = np.log(data[2])
         log_sim = np.log(data[1])
-        grad, intercept = np.polyfit(log_run, log_sim, 1)
-        sim_fit = np.exp(grad*log_run + intercept)
+        half = int(len(data[2])/2)
+        grad, intercept = np.polyfit(log_run[-half:], log_sim[-half:], 1)
+        sim_fit = np.exp(grad*log_run[-half:] + intercept)
         plt.plot(data[2], data[1], label="Simulation data")
-        #plt.plot(data[2], sim_fit, label="Fit")
+        plt.plot(data[2][-half:], sim_fit, label="Fit")
         ax.set_xscale("log")
         ax.set_yscale("log")
         plt.xlabel("Run time (s)")
@@ -191,36 +191,39 @@ def plot_secondary_graphs(run_name,
         plt.savefig("results/graphs/{a}sim_run.png".format(a=run_name))
 
     if "momentum" in to_plot:
-        fig = plt.figure()
-        ax = fig.add_subplot(211)
-        ax.set_title("{}: Momentum step per calculation".format(run_name))
-        ax.plot(data[5], label="Momentum")
-        ax.legend(loc="best")
-        ax.set_xlabel("Calculation number")
-        ax.set_ylabel("Momentum (kg m/s)")
-        ax.grid()
+        try:
+            fig = plt.figure()
+            ax = fig.add_subplot(211)
+            ax.set_title("{}: Momentum step per calculation".format(run_name))
+            ax.plot(data[5], label="Momentum")
+            ax.legend(loc="best")
+            ax.set_xlabel("Calculation number")
+            ax.set_ylabel("Momentum (kg m/s)")
+            ax.grid()
 
-        ax2 = fig.add_subplot(212)
-        ax2.set_title("{}: Momentum against simulation time".format(run_name))
-        ax2.loglog(data[1], data[5], label="Momentum")
-        ax2.set_xlabel("Simulation time (s)")
-        ax2.set_ylabel("Momentum (kg m/s)")
-        ax2.grid()
-        plt.tight_layout(pad=0.4, h_pad=1)
-        plt.savefig("results/graphs/{}momentum.png".format(run_name))
-
+            ax2 = fig.add_subplot(212)
+            ax2.set_title("{}: Momentum against simulation time".format(run_name))
+            ax2.plot(data[1], data[5], label="Momentum")
+            ax2.set_xlabel("Simulation time (s)")
+            ax2.set_ylabel("Momentum (kg m/s)")
+            ax2.grid()
+            plt.tight_layout(pad=0.4, h_pad=1)
+            plt.savefig("results/graphs/{}momentum.png".format(run_name))
+        except:
+            pass
     return data
 
 if __name__ == "__main__":
 
 
-    runs=["3x4_standard"]
+    runs=["3x3_standard", "3x4_standard", "1x5_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3", "1x2_euler", "1x2_verlet"]
+    runs = ["3x4_standard"]
     for run in runs:
         plot_graph(run,
                    plot_pos=1,
                    display="True",
-                   x_dist=4e16,
-                   binary_to_plot=[3, 4, 10 ,12])
+                   x_dist=1e16)
+                   #binary_to_plot=[3, 0])
         data = plot_secondary_graphs(run, to_plot=["energy", "sim_run", "time", "momentum"])
 
 """
