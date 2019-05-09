@@ -217,14 +217,14 @@ if __name__ == "__main__":
 
 
     runs=["3x3_standard", "3x4_standard", "1x5_standard", "1x5_seed1", "1x5_seed2", "1x5_seed3", "1x2_euler", "1x2_verlet"]
-    runs = ["1x5_seed6", "1x5_seed8"]
+    runs = ["1x2_euler", "1x2_verlet"]
     for run in runs:
         plot_graph(run,
                    plot_pos=1,
                    display="True",
                    x_dist=1e16)
                    #binary_to_plot=[3, 0])
-        #data = plot_secondary_graphs(run, to_plot=["energy", "sim_run", "time", "momentum"])
+        data = plot_secondary_graphs(run, to_plot=["energy", "sim_run", "time", "momentum"])
 
 """
 plot_graph("6x3_standard",

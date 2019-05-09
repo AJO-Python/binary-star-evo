@@ -69,7 +69,7 @@ class binary:
         # Semi-major axis (sma)
         self.sma = -(G*body1.mass*body2.mass) / (2*(self.EK + self.EP))/1.496e+11
         # Mass ratio
-        self.mr = self.primary.mass / self.secondary.mass
+        self.mr = self.secondary.mass / self.primary.mass
         self.base = [self.primary.ID, self.secondary.ID]
         #self.period = get_binary_period()
 
@@ -213,6 +213,7 @@ def create_body_objects(directory, index=-1):
     # Generating and storing all body objects in an array for easy access
     body_list_create = []
     for index, mass in enumerate(masses):
+        mass = int(abs(mass))
         pos = np.array([pos_x[index], pos_y[index], pos_z[index]], dtype="int64")
         vel = np.array([vel_x[index], vel_y[index], vel_z[index]], dtype="int64")
         temp_body = body_class(mass, pos, vel)
@@ -257,5 +258,5 @@ def new_detect_binaries(run_name, calc_index):
                                                        primary.position,
                                                        secondary.position)
                 pairs["{}-{}".format(primary.ID, secondary.ID)] = pair_potential
-    return pairs, body_list
+    return pairs, all_bodies
 
