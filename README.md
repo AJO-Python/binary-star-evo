@@ -9,5 +9,5 @@ A project to simulate protostars dynamically interacting and extract data about 
   
   <li> Run "orbit.py" </li>
   
-  <li> Rubn "detection.py" for automatic detection and analysis of the binaries formed</li>
+  <li> Run "detection.py" for automatic detection and analysis of the binaries formed</li>
 </ul>
